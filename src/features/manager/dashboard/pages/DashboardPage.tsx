@@ -13,7 +13,6 @@ import { useAuthContext } from '@/core/contexts/auth.context'
 import { supabase } from '@/lib/supabase/client'
 import { Card, CardContent, CardHeader, CardTitle } from '@/ui/card'
 import { Skeleton } from '@/ui/skeleton'
-import { Button } from '@/ui/button'
 
 function useManagerDashboard(tenantId: string) {
   return useQuery({
@@ -104,21 +103,22 @@ export function DashboardPage() {
     <div className="mx-auto max-w-6xl">
       <div className="mb-8 rounded-2xl border border-border bg-gradient-to-br from-primary/[0.06] via-background to-secondary/[0.06] p-6 shadow-sm md:p-8">
         <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Olá, {firstName}</h1>
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           {QUICK_ACTIONS.map(({ to, label, desc, icon: Icon }) => (
-            <Button key={to} variant="secondary" className="h-auto px-0 py-0" asChild>
-              <Link
-                to={to}
-                className="inline-flex items-center gap-3 rounded-md px-4 py-3 text-left font-normal"
-              >
-                <Icon className="size-4 shrink-0 text-primary" />
-                <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-semibold text-foreground">{label}</span>
-                  <span className="block text-xs text-muted-foreground">{desc}</span>
-                </span>
-                <ArrowRight className="size-4 shrink-0 opacity-50" />
-              </Link>
-            </Button>
+            <Link key={to} to={to} className="group block min-w-0">
+              <Card className="h-full min-h-[5.25rem] border-border/80 bg-background/90 shadow-sm transition-all hover:border-primary/40 hover:shadow-md sm:min-h-0">
+                <CardContent className="flex h-full items-center gap-3 p-4">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <Icon className="size-5" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold leading-snug text-foreground">{label}</p>
+                    <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{desc}</p>
+                  </div>
+                  <ArrowRight className="size-4 shrink-0 text-muted-foreground opacity-50 transition-all group-hover:translate-x-0.5 group-hover:opacity-90" />
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>
