@@ -34,7 +34,7 @@ export function Sidebar({ onCloseMobileNav }: SidebarProps) {
   const { data: store } = useManagerTenant()
 
   return (
-    <div className="flex h-full min-h-0 w-full flex-col bg-muted/30">
+    <div className="flex h-full min-h-0 w-full flex-col bg-background md:bg-muted/30">
       <div className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border px-3 sm:px-4">
         <span className="truncate text-sm font-bold tracking-tight text-primary">Recriar</span>
         {onCloseMobileNav && (

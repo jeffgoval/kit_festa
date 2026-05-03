@@ -34,7 +34,7 @@ export function ManagerRoot() {
       />
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-[min(17.5rem,90vw)] flex-col border-r border-border bg-muted/30 shadow-lg transition-transform duration-200 ease-out md:relative md:z-0 md:max-w-none md:w-56 md:translate-x-0 md:shadow-none',
+          'fixed inset-y-0 left-0 z-50 flex w-[min(17.5rem,90vw)] flex-col border-r border-border bg-background shadow-lg transition-transform duration-200 ease-out md:relative md:z-0 md:max-w-none md:w-56 md:translate-x-0 md:shadow-none',
           mobileNavOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
         )}
       >
