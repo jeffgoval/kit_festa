@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '@/lib/supabase/client'
+import { getAuthEmailRedirectUrl } from '@/lib/site-url'
 import { useAuth } from '@/core/hooks/use-auth'
 import type { UserRole } from '@/core/types'
 
@@ -117,7 +118,7 @@ export function LoginPage() {
             },
           }}
           providers={[]} // Desabilitado por enquanto, mas pronto para adicionar Google, etc.
-          redirectTo={`${window.location.origin}${intended}`}
+          redirectTo={getAuthEmailRedirectUrl()}
         />
 
         <div className="mt-8 border-t border-border/50 pt-6 text-center">
