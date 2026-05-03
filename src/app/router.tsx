@@ -3,7 +3,6 @@ import { lazy, Suspense } from 'react'
 import { PageSpinner } from '@/ui/page-spinner'
 import { RequireAuth } from '@/core/components/require-auth'
 import { RequireRole } from '@/core/components/require-role'
-import { RouteErrorFallback } from '@/app/route-error-fallback'
 
 // — Public store —
 const StoreRoot = lazy(() =>
@@ -121,7 +120,6 @@ export const router = createBrowserRouter([
   // ────────────────────────────────────────
   {
     path: 'app',
-    errorElement: <RouteErrorFallback />,
     element: (
       <RequireAuth redirectTo="/app/login">
         <RequireRole allow={['gestor', 'admin']}>
@@ -152,7 +150,6 @@ export const router = createBrowserRouter([
   // ────────────────────────────────────────
   {
     path: 'admin',
-    errorElement: <RouteErrorFallback />,
     element: (
       <RequireAuth redirectTo="/app/login">
         <RequireRole allow={['admin']}>

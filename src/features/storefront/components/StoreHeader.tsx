@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Menu, ShoppingBag, X } from 'lucide-react'
+import { LogIn, Menu, ShoppingBag, X } from 'lucide-react'
 import { useTenant } from '@/core/contexts/tenant.context'
 import { useCartStore } from '@/core/stores/cart.store'
 import { Button } from '@/ui/button'
@@ -57,6 +57,14 @@ export function StoreHeader() {
               <span className="absolute bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-primary transition-all duration-300 group-hover:w-1/2" />
             </Link>
           ))}
+          <Link
+            to="/app/login"
+            className="group relative ml-1 inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+          >
+            <LogIn className="size-3.5" />
+            Entrar
+            <span className="absolute bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-primary transition-all duration-300 group-hover:w-1/2" />
+          </Link>
           {waHref && (
             <a
               href={waHref}
@@ -72,6 +80,12 @@ export function StoreHeader() {
 
         {/* Right actions */}
         <div className="flex items-center gap-1.5">
+          <Button variant="outline" size="sm" className="shrink-0 gap-1.5 px-3 md:hidden" asChild>
+            <Link to="/app/login">
+              <LogIn className="size-4" />
+              Entrar
+            </Link>
+          </Button>
           <Button variant="ghost" size="icon" asChild className="relative shrink-0">
             <Link to={`${base}/minha-festa`} aria-label="Carrinho">
               <ShoppingBag className="size-5" />
@@ -103,6 +117,14 @@ export function StoreHeader() {
       {mobileOpen && (
         <div className="animate-fade-in border-t border-border/60 bg-background md:hidden">
           <nav className="container flex flex-col gap-1 px-4 py-4">
+            <Link
+              to="/app/login"
+              className="flex items-center gap-2 rounded-xl px-4 py-3.5 text-base font-medium text-primary transition-colors hover:bg-muted"
+              onClick={() => setMobileOpen(false)}
+            >
+              <LogIn className="size-4 shrink-0" />
+              Entrar (painel da loja)
+            </Link>
             {navLinks.map(({ to, label }) => (
               <Link
                 key={to}

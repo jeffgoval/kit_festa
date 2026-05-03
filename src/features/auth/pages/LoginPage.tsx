@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { supabase } from '@/lib/supabase/client'
-import { getAuthEmailRedirectUrl } from '@/lib/site-url'
 import { useAuth } from '@/core/hooks/use-auth'
+
+function authEmailRedirectUrl() {
+  if (typeof window === 'undefined') return ''
+  return `${window.location.origin}/app/login`
+}
 import type { UserRole } from '@/core/types'
 import { Button } from '@/ui/button'
 import { Input } from '@/ui/input'
@@ -74,7 +78,7 @@ export function LoginPage() {
       email: email.trim(),
       password,
       options: {
-        emailRedirectTo: getAuthEmailRedirectUrl(),
+        emailRedirectTo: authEmailRedirectUrl(),
         data: { full_name: fullName.trim() },
       },
     })
@@ -105,7 +109,7 @@ export function LoginPage() {
     }
     setBusy(true)
     const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
-      redirectTo: getAuthEmailRedirectUrl(),
+      redirectTo: authEmailRedirectUrl(),
     })
     setBusy(false)
     if (error) {

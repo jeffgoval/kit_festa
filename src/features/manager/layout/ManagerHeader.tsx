@@ -1,4 +1,4 @@
-import { ExternalLink, LogOut, Menu } from 'lucide-react'
+import { ExternalLink, LogOut } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase/client'
 import { useAuthContext } from '@/core/contexts/auth.context'
@@ -6,11 +6,7 @@ import { useManagerTenant } from '@/core/hooks/use-manager-tenant'
 import { Button } from '@/ui/button'
 import { Skeleton } from '@/ui/skeleton'
 
-interface ManagerHeaderProps {
-  onOpenMobileNav?: () => void
-}
-
-export function ManagerHeader({ onOpenMobileNav }: ManagerHeaderProps) {
+export function ManagerHeader() {
   const { user } = useAuthContext()
   const navigate = useNavigate()
   const { data: store, isLoading } = useManagerTenant()
@@ -21,28 +17,14 @@ export function ManagerHeader({ onOpenMobileNav }: ManagerHeaderProps) {
   }
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-background px-3 sm:gap-4 sm:px-4 md:px-6">
-      <div className="flex min-w-0 flex-1 items-center gap-2">
-        {onOpenMobileNav && (
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="shrink-0 md:hidden"
-            aria-label="Abrir menu"
-            onClick={onOpenMobileNav}
-          >
-            <Menu className="size-5" />
-          </Button>
+    <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-background px-4 md:px-6">
+      <div className="min-w-0 flex-1">
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Painel</p>
+        {isLoading ? (
+          <Skeleton className="mt-0.5 h-5 w-40" />
+        ) : (
+          <p className="truncate text-sm font-semibold text-foreground">{store?.name ?? 'Minha loja'}</p>
         )}
-        <div className="min-w-0 flex-1">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Painel</p>
-          {isLoading ? (
-            <Skeleton className="mt-0.5 h-5 w-32 sm:w-40" />
-          ) : (
-            <p className="truncate text-sm font-semibold text-foreground">{store?.name ?? 'Minha loja'}</p>
-          )}
-        </div>
       </div>
 
       <div className="flex items-center gap-2">
