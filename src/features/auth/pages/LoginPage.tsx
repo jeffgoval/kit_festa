@@ -86,11 +86,16 @@ export function LoginPage() {
     if (data.user && !data.session) {
       toast({
         title: 'Confirme o e-mail',
-        description: 'Enviamos um link. Depois de confirmar, um administrador pode liberar o acesso ao painel (papel e loja).',
+        description:
+          'Enviamos um link. Depois de confirmar, sua conta fica como cliente até um administrador promover a gestor e vincular a loja.',
       })
       return
     }
-    toast({ title: 'Conta criada', description: 'Você já pode entrar. Peça ao administrador para vincular sua loja e ajustar o papel, se necessário.' })
+    toast({
+      title: 'Conta criada',
+      description:
+        'Você entra como cliente na loja. Para acessar o painel (/app), um administrador deve alterar seu papel para gestor e vincular a loja.',
+    })
   }
 
   async function onRecovery() {
@@ -119,7 +124,7 @@ export function LoginPage() {
         <div className="mb-6 text-center">
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">Painel Kit Festa</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Login simples — o administrador ajusta papel e loja depois do cadastro.
+            Cadastro vira cliente; o administrador promove a gestor e vincula a loja quando for liberar o painel.
           </p>
         </div>
 
