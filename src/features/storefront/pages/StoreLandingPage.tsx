@@ -109,8 +109,8 @@ export function StoreLandingPage() {
         <div className="pointer-events-none absolute -right-32 top-0 h-80 w-80 rounded-full bg-secondary/20 blur-[100px]" />
         <div className="pointer-events-none absolute -left-20 bottom-0 h-60 w-60 rounded-full bg-primary/15 blur-[80px]" />
 
-        <div className="container relative mx-auto max-w-[100vw] px-3 pb-16 sm:px-4 sm:pb-20 md:pb-24">
-          <div className="mx-auto max-w-3xl text-center animate-fade-in">
+        <div className="container relative mx-auto pb-16 sm:pb-20 md:pb-24">
+          <div className="mx-auto max-w-4xl text-center animate-fade-in">
             <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-background/80 px-3 py-1.5 text-[11px] font-medium text-primary shadow-card backdrop-blur sm:mb-6 sm:px-5 sm:py-2 sm:text-xs">
               <Sparkles className="size-3.5 shrink-0 animate-bounce-soft" />
               <span className="min-w-0 text-left leading-snug sm:text-center">
@@ -161,7 +161,7 @@ export function StoreLandingPage() {
       {/* Pilares — como funciona                 */}
       {/* ═══════════════════════════════════════ */}
       <section className="bg-background py-16 md:py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="text-center">
             <span className="inline-block rounded-full bg-primary/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-primary">
               Como funciona
@@ -170,7 +170,7 @@ export function StoreLandingPage() {
               Três jeitos de montar sua decoração
             </h2>
           </div>
-          <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-3 animate-stagger">
+          <div className="mx-auto mt-12 grid max-w-6xl gap-6 md:grid-cols-3 animate-stagger">
             {[
               {
                 icon: Package,
@@ -221,7 +221,7 @@ export function StoreLandingPage() {
         {/* Wavy top */}
         <WaveDivider flip className="absolute left-0 right-0 top-0" />
 
-        <div className="container relative z-10 mx-auto px-4 pt-8">
+        <div className="container relative z-10 mx-auto pt-8">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <h2 className="font-display text-2xl font-bold tracking-tight md:text-3xl">Composições em destaque</h2>
@@ -279,7 +279,7 @@ export function StoreLandingPage() {
       {/* Itens do acervo                         */}
       {/* ═══════════════════════════════════════ */}
       <section className="py-16 md:py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div>
               <h2 className="font-display text-2xl font-bold tracking-tight md:text-3xl">Peças do acervo</h2>
@@ -344,7 +344,7 @@ export function StoreLandingPage() {
       {/* Prova social / confiança                */}
       {/* ═══════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-muted/30 py-16 md:py-20">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="mx-auto max-w-3xl rounded-2xl bg-gradient-to-br from-primary/[0.08] via-secondary/[0.05] to-background p-6 text-center shadow-card sm:rounded-3xl sm:p-10 md:p-14">
             <div className="mx-auto flex justify-center gap-1 text-accent">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -370,7 +370,7 @@ export function StoreLandingPage() {
         <div className="pointer-events-none absolute -left-20 top-0 h-60 w-60 rounded-full bg-secondary/20 blur-[80px]" />
         <div className="pointer-events-none absolute -right-20 bottom-0 h-60 w-60 rounded-full bg-accent/20 blur-[80px]" />
 
-        <div className="container relative z-10 mx-auto flex flex-col items-center gap-6 px-4 text-center md:flex-row md:justify-between md:text-left">
+        <div className="container relative z-10 mx-auto flex flex-col items-center gap-6 text-center md:flex-row md:justify-between md:text-left">
           <div>
             <h2 className="font-display text-2xl font-bold md:text-3xl">Já pensou na sua decoração?</h2>
             <p className="mt-2 max-w-md text-sm leading-relaxed opacity-80">

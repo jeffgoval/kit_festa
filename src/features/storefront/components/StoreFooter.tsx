@@ -17,7 +17,7 @@ export function StoreFooter() {
       {/* Decorative top curve */}
       <div className="absolute -top-px left-0 right-0 h-16 bg-background" style={{ clipPath: 'ellipse(55% 100% at 50% 0%)' }} />
 
-      <div className="container mx-auto px-4 pb-10 pt-20 md:pb-12 md:pt-24">
+      <div className="container mx-auto pb-10 pt-20 md:pb-12 md:pt-24">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {/* Brand column */}
           <div className="lg:col-span-2">

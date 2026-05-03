@@ -57,7 +57,7 @@ export function CheckoutPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <h1 className="mb-6 text-2xl font-bold">Solicitar reserva</h1>
 
       <div className="grid gap-8 lg:grid-cols-[1fr_320px]">

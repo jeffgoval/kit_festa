@@ -26,7 +26,7 @@ export function MyPartyPage() {
 
   if (entries.length === 0) {
     return (
-      <div className="container mx-auto flex max-w-[100vw] flex-col items-center gap-4 px-3 py-16 text-center sm:px-4 sm:py-24">
+      <div className="container mx-auto flex flex-col items-center gap-4 py-16 text-center sm:py-24">
         <p className="text-lg font-medium">Sua festa está vazia</p>
         <p className="text-sm text-muted-foreground">
           Adicione itens do acervo para começar.
@@ -39,7 +39,7 @@ export function MyPartyPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-[100vw] px-3 py-6 sm:px-4 sm:py-8">
+    <div className="container mx-auto py-6 sm:py-8">
       <h1 className="mb-4 text-xl font-bold sm:mb-6 sm:text-2xl">Minha Festa</h1>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">

@@ -102,7 +102,7 @@ export function DashboardPage() {
   const firstName = profile?.full_name?.split(/\s+/)[0] ?? user?.email?.split('@')[0] ?? 'Gestor'
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto w-full max-w-7xl min-w-0">
       <div className="mb-6 rounded-2xl border border-border bg-gradient-to-br from-primary/[0.06] via-background to-secondary/[0.06] p-4 shadow-sm sm:mb-8 sm:p-6 md:p-8">
         <h1 className="text-xl font-bold tracking-tight sm:text-2xl md:text-3xl">Olá, {firstName}</h1>
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">

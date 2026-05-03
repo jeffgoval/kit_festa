@@ -3,6 +3,24 @@ import type { Config } from 'tailwindcss'
 const config: Config = {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: '1rem',
+        sm: '1.25rem',
+        md: '1.5rem',
+        lg: '2rem',
+        xl: '2.25rem',
+        '2xl': '2.5rem',
+      },
+      screens: {
+        sm: '640px',
+        md: '768px',
+        lg: '1120px',
+        xl: '1380px',
+        '2xl': '1700px',
+      },
+    },
     extend: {
       fontFamily: {
         sans: ['"Poppins"', 'ui-sans-serif', 'system-ui', 'sans-serif'],

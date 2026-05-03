@@ -26,6 +26,9 @@ const CompositionDetailPage = lazy(() =>
 const MyPartyPage = lazy(() =>
   import('@/features/cart/pages/MyPartyPage').then((m) => ({ default: m.MyPartyPage })),
 )
+const CheckoutPage = lazy(() =>
+  import('@/features/checkout/pages/CheckoutPage').then((m) => ({ default: m.CheckoutPage })),
+)
 const SuccessPage = lazy(() =>
   import('@/features/checkout/pages/SuccessPage').then((m) => ({ default: m.SuccessPage })),
 )
@@ -105,6 +108,7 @@ export const router = createBrowserRouter([
       { path: 'itens/:itemSlug', element: s(<ItemDetailPage />) },
       { path: 'composicoes', element: s(<CompositionsPage />) },
       { path: 'composicoes/:compositionSlug', element: s(<CompositionDetailPage />) },
+      { path: 'minha-festa/checkout', element: s(<CheckoutPage />) },
       { path: 'minha-festa', element: s(<MyPartyPage />) },
       { path: 'solicitacao-enviada', element: s(<SuccessPage />) },
     ],

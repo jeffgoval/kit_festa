@@ -25,7 +25,7 @@ export function StoreHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/40 bg-background/80 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex min-h-[60px] items-center justify-between gap-2 px-3 py-2 sm:min-h-[72px] sm:gap-3 sm:px-4">
+      <div className="container mx-auto flex min-h-[60px] items-center justify-between gap-2 py-2 sm:min-h-[72px] sm:gap-3">
         {/* Logo */}
         <Link
           to={base}
@@ -115,7 +115,7 @@ export function StoreHeader() {
       {/* Mobile drawer */}
       {mobileOpen && (
         <div className="animate-fade-in border-t border-border/60 bg-background pb-[max(0.5rem,env(safe-area-inset-bottom))] md:hidden">
-          <nav className="container flex max-h-[min(70vh,28rem)] flex-col gap-1 overflow-y-auto overscroll-contain px-3 py-3 sm:px-4 sm:py-4">
+          <nav className="container mx-auto flex max-h-[min(70vh,28rem)] flex-col gap-1 overflow-y-auto overscroll-contain py-3 sm:py-4">
             <Link
               to="/app/login"
               className="flex items-center gap-2 rounded-xl px-4 py-3.5 text-base font-medium text-primary transition-colors hover:bg-muted"

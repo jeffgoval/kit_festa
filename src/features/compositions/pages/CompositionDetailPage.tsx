@@ -44,7 +44,7 @@ export function CompositionDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto py-8">
         <Skeleton className="mb-6 h-5 w-32" />
         <Skeleton className="mb-4 h-8 w-64" />
         <Skeleton className="h-48 w-full rounded-lg" />
@@ -55,7 +55,7 @@ export function CompositionDetailPage() {
   if (!composition) return null
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <Link
         to={`/${tenantSlug}/composicoes`}
         className="mb-6 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"

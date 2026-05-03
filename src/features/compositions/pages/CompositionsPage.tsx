@@ -11,7 +11,7 @@ export function CompositionsPage() {
   const { data: compositions = [], isLoading } = useCompositions(tenant.id)
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto py-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Composições Prontas</h1>
         <p className="mt-1 text-sm text-muted-foreground">

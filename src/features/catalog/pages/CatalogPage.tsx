@@ -23,7 +23,7 @@ export function CatalogPage() {
   })
 
   return (
-    <div className="container mx-auto max-w-[100vw] px-3 py-6 sm:px-4 sm:py-8 md:py-10">
+    <div className="container mx-auto py-6 sm:py-8 md:py-10">
       <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:gap-5">
         <div>
           <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">Acervo</h1>

@@ -106,7 +106,7 @@ export function AdminRoot() {
           </Button>
           <span className="truncate text-sm font-semibold text-foreground">Painel admin</span>
         </header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain px-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] pt-2 sm:px-4 sm:pb-4 sm:pt-3 md:px-6 md:pb-6 md:pt-4">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto overscroll-y-contain px-4 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] pt-2 sm:px-5 sm:pb-4 sm:pt-3 md:px-8 md:pb-6 md:pt-4 lg:px-10">
           <Outlet />
         </main>
       </div>
