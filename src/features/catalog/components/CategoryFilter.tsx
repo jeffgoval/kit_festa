@@ -9,11 +9,12 @@ interface CategoryFilterProps {
 
 export function CategoryFilter({ categories, selected, onChange }: CategoryFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="-mx-1 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] sm:flex-wrap sm:overflow-visible sm:pb-0">
       <button
+        type="button"
         onClick={() => onChange(null)}
         className={cn(
-          'rounded-full border px-5 py-2 text-sm font-medium transition-all duration-200',
+          'shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-medium transition-all duration-200 sm:px-5 sm:text-sm',
           selected === null
             ? 'border-primary bg-primary text-primary-foreground shadow-md'
             : 'border-border bg-background text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-foreground hover:shadow-sm',
@@ -25,9 +26,10 @@ export function CategoryFilter({ categories, selected, onChange }: CategoryFilte
       {categories.map((cat) => (
         <button
           key={cat.id}
+          type="button"
           onClick={() => onChange(cat.id)}
           className={cn(
-            'rounded-full border px-5 py-2 text-sm font-medium transition-all duration-200',
+            'shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-xs font-medium transition-all duration-200 sm:px-5 sm:text-sm',
             selected === cat.id
               ? 'border-primary bg-primary text-primary-foreground shadow-md'
               : 'border-border bg-background text-muted-foreground hover:border-primary/40 hover:bg-primary/5 hover:text-foreground hover:shadow-sm',

@@ -25,31 +25,43 @@ export function CustomersPage() {
   })
 
   return (
-    <div>
-      <h1 className="mb-6 text-xl font-bold">Clientes</h1>
+    <div className="min-w-0">
+      <h1 className="mb-4 text-lg font-bold sm:mb-6 sm:text-xl">Clientes</h1>
 
       {isLoading ? (
         <div className="flex flex-col gap-3">
           {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-14 rounded-lg" />)}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-border bg-background">
-          <table className="w-full text-sm">
+        <div className="w-full min-w-0 overflow-x-auto rounded-lg border border-border bg-background [-webkit-overflow-scrolling:touch]">
+          <table className="w-full min-w-[28rem] text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/40">
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Nome</th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground sm:table-cell">Telefone</th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground md:table-cell">E-mail</th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground lg:table-cell">Desde</th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                  Nome
+                </th>
+                <th className="hidden px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:table-cell sm:px-4 sm:py-3 sm:text-sm">
+                  Telefone
+                </th>
+                <th className="hidden px-3 py-2.5 text-left text-xs font-medium text-muted-foreground md:table-cell sm:px-4 sm:py-3 sm:text-sm">
+                  E-mail
+                </th>
+                <th className="hidden px-3 py-2.5 text-left text-xs font-medium text-muted-foreground lg:table-cell sm:px-4 sm:py-3 sm:text-sm">
+                  Desde
+                </th>
               </tr>
             </thead>
             <tbody>
               {customers.map((c) => (
                 <tr key={c.id} className="border-b border-border last:border-0 hover:bg-muted/30">
-                  <td className="px-4 py-3 font-medium">{c.name}</td>
-                  <td className="hidden px-4 py-3 text-muted-foreground sm:table-cell">{c.phone}</td>
-                  <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">{c.email ?? '—'}</td>
-                  <td className="hidden px-4 py-3 text-muted-foreground lg:table-cell">
+                  <td className="px-3 py-2.5 font-medium leading-snug sm:px-4 sm:py-3">{c.name}</td>
+                  <td className="hidden px-3 py-2.5 text-muted-foreground sm:table-cell sm:px-4 sm:py-3">
+                    {c.phone}
+                  </td>
+                  <td className="hidden max-w-[12rem] truncate px-3 py-2.5 text-muted-foreground md:table-cell sm:max-w-none sm:px-4 sm:py-3">
+                    {c.email ?? '—'}
+                  </td>
+                  <td className="hidden px-3 py-2.5 text-muted-foreground lg:table-cell sm:px-4 sm:py-3">
                     {formatDate(c.created_at.split('T')[0])}
                   </td>
                 </tr>

@@ -63,17 +63,19 @@ interface StatCardProps {
 function StatCard({ icon: Icon, label, value, loading, highlight }: StatCardProps) {
   return (
     <Card className="overflow-hidden border-border/80 shadow-sm">
-      <CardHeader className="pb-2">
-        <CardTitle className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          <Icon className="size-4" />
-          {label}
+      <CardHeader className="gap-1 p-4 pb-2 sm:p-6 sm:pb-2">
+        <CardTitle className="flex items-start gap-2 text-xs font-medium leading-snug text-muted-foreground sm:text-sm">
+          <Icon className="mt-0.5 size-4 shrink-0" />
+          <span className="min-w-0">{label}</span>
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-4 pb-4 pt-0 sm:px-6 sm:pb-6">
         {loading ? (
           <Skeleton className="h-9 w-16" />
         ) : (
-          <p className={`text-3xl font-bold tabular-nums ${highlight ? 'text-primary' : 'text-foreground'}`}>
+          <p
+            className={`text-2xl font-bold tabular-nums sm:text-3xl ${highlight ? 'text-primary' : 'text-foreground'}`}
+          >
             {value}
           </p>
         )}
@@ -101,8 +103,8 @@ export function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="mb-8 rounded-2xl border border-border bg-gradient-to-br from-primary/[0.06] via-background to-secondary/[0.06] p-6 shadow-sm md:p-8">
-        <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Olá, {firstName}</h1>
+      <div className="mb-6 rounded-2xl border border-border bg-gradient-to-br from-primary/[0.06] via-background to-secondary/[0.06] p-4 shadow-sm sm:mb-8 sm:p-6 md:p-8">
+        <h1 className="text-xl font-bold tracking-tight sm:text-2xl md:text-3xl">Olá, {firstName}</h1>
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
           {QUICK_ACTIONS.map(({ to, label, desc, icon: Icon }) => (
             <Link key={to} to={to} className="group block min-w-0">
@@ -123,8 +125,10 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <h2 className="mb-4 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Indicadores</h2>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground sm:mb-4 sm:text-sm">
+        Indicadores
+      </h2>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
         <StatCard
           icon={Clock}
           label="Reservas pendentes"

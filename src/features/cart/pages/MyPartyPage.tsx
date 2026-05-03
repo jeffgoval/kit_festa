@@ -26,7 +26,7 @@ export function MyPartyPage() {
 
   if (entries.length === 0) {
     return (
-      <div className="container mx-auto flex flex-col items-center gap-4 px-4 py-24 text-center">
+      <div className="container mx-auto flex max-w-[100vw] flex-col items-center gap-4 px-3 py-16 text-center sm:px-4 sm:py-24">
         <p className="text-lg font-medium">Sua festa está vazia</p>
         <p className="text-sm text-muted-foreground">
           Adicione itens do acervo para começar.
@@ -39,10 +39,10 @@ export function MyPartyPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-6 text-2xl font-bold">Minha Festa</h1>
+    <div className="container mx-auto max-w-[100vw] px-3 py-6 sm:px-4 sm:py-8">
+      <h1 className="mb-4 text-xl font-bold sm:mb-6 sm:text-2xl">Minha Festa</h1>
 
-      <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
+      <div className="grid gap-6 lg:grid-cols-[1fr_340px] lg:gap-8">
         {/* Item list */}
         <div className="flex flex-col gap-3">
           {entries.map((entry) => {
@@ -51,77 +51,86 @@ export function MyPartyPage() {
             return (
               <div
                 key={entry.itemId}
-                className={`flex gap-4 rounded-lg border p-4 ${
+                className={`flex flex-col gap-3 rounded-lg border p-3 sm:gap-4 sm:p-4 ${
                   isUnavailable ? 'border-destructive bg-destructive/5' : 'border-border bg-background'
                 }`}
               >
-                {entry.imageUrl ? (
-                  <img
-                    src={entry.imageUrl}
-                    alt={entry.name}
-                    className="h-16 w-16 rounded-md object-cover"
-                  />
-                ) : (
-                  <div className="h-16 w-16 rounded-md bg-muted" />
-                )}
+                <div className="flex gap-3">
+                  {entry.imageUrl ? (
+                    <img
+                      src={entry.imageUrl}
+                      alt={entry.name}
+                      className="h-16 w-16 shrink-0 rounded-md object-cover sm:h-[4.5rem] sm:w-[4.5rem]"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 shrink-0 rounded-md bg-muted sm:h-[4.5rem] sm:w-[4.5rem]" />
+                  )}
 
-                <div className="flex flex-1 flex-col gap-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{entry.name}</p>
-                  {entry.unitPrice != null && (
-                    <p className="text-xs text-muted-foreground">
-                      {formatPrice(entry.unitPrice)} / un.
-                    </p>
-                  )}
-                  {isUnavailable && (
-                    <p className="flex items-center gap-1 text-xs text-destructive">
-                      <AlertCircle className="size-3" />
-                      Indisponível na data selecionada
-                    </p>
-                  )}
+                  <div className="flex min-w-0 flex-1 flex-col gap-1">
+                    <p className="text-sm font-medium leading-snug">{entry.name}</p>
+                    {entry.unitPrice != null && (
+                      <p className="text-xs text-muted-foreground">
+                        {formatPrice(entry.unitPrice)} / un.
+                      </p>
+                    )}
+                    {isUnavailable && (
+                      <p className="flex items-start gap-1.5 text-xs text-destructive">
+                        <AlertCircle className="mt-0.5 size-3.5 shrink-0" />
+                        <span>Indisponível na data selecionada</span>
+                      </p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="flex flex-col items-end gap-2 shrink-0">
-                  <button
-                    onClick={() => removeItem(entry.itemId)}
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="size-4" />
-                  </button>
-
-                  <div className="flex items-center gap-1 rounded border border-border">
+                <div className="flex flex-row items-center justify-between gap-3 border-t border-border/60 pt-3">
+                  <div className="flex items-center gap-1 rounded-lg border border-border">
                     <button
+                      type="button"
                       onClick={() => updateQuantity(entry.itemId, entry.quantity - 1)}
-                      className="flex h-7 w-7 items-center justify-center hover:bg-muted"
+                      className="flex h-9 w-9 items-center justify-center hover:bg-muted"
                     >
-                      <Minus className="size-3" />
+                      <Minus className="size-4" />
                     </button>
-                    <span className="min-w-[2ch] text-center text-sm">{entry.quantity}</span>
+                    <span className="min-w-[2ch] px-1 text-center text-sm font-medium tabular-nums">
+                      {entry.quantity}
+                    </span>
                     <button
+                      type="button"
                       onClick={() => updateQuantity(entry.itemId, entry.quantity + 1)}
-                      className="flex h-7 w-7 items-center justify-center hover:bg-muted"
+                      className="flex h-9 w-9 items-center justify-center hover:bg-muted"
                       disabled={entry.quantity >= entry.totalAvailable}
                     >
-                      <Plus className="size-3" />
+                      <Plus className="size-4" />
                     </button>
                   </div>
 
-                  {entry.unitPrice != null && (
-                    <p className="text-sm font-medium">
-                      {formatPrice(entry.unitPrice * entry.quantity)}
-                    </p>
-                  )}
+                  <div className="flex items-center gap-3">
+                    {entry.unitPrice != null && (
+                      <p className="text-sm font-semibold tabular-nums">
+                        {formatPrice(entry.unitPrice * entry.quantity)}
+                      </p>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeItem(entry.itemId)}
+                      className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      aria-label="Remover item"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
                 </div>
               </div>
             )
           })}
 
-          <Button variant="outline" asChild className="mt-2 w-fit">
+          <Button variant="outline" asChild className="mt-1 w-full sm:mt-2 sm:w-fit">
             <Link to={`/${tenantSlug}/itens`}>+ Adicionar mais itens</Link>
           </Button>
         </div>
 
         {/* Summary sidebar */}
-        <div className="flex flex-col gap-4 h-fit rounded-lg border border-border p-6">
+        <div className="flex h-fit flex-col gap-4 rounded-lg border border-border p-4 sm:p-6">
           <h2 className="font-semibold">Resumo</h2>
 
           <div>
@@ -151,6 +160,7 @@ export function MyPartyPage() {
 
           <Button
             size="lg"
+            className="w-full"
             disabled={!eventDate || hasConflicts || checkingAvailability}
             onClick={() => navigate(`/${tenantSlug}/minha-festa/checkout`)}
           >

@@ -186,8 +186,8 @@ export function StoreSettingsPage() {
   })
 
   return (
-    <div className="max-w-2xl">
-      <h1 className="mb-6 text-xl font-bold">Minha Loja</h1>
+    <div className="w-full max-w-2xl min-w-0">
+      <h1 className="mb-4 text-lg font-bold sm:mb-6 sm:text-xl">Minha Loja</h1>
 
       <form
         onSubmit={form.handleSubmit(
@@ -208,7 +208,7 @@ export function StoreSettingsPage() {
         {/* Logo */}
         <div>
           <h2 className="mb-3 text-sm font-semibold">Logo</h2>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
             {tenant?.logo_url ? (
               <img
                 src={tenant.logo_url}

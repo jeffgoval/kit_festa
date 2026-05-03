@@ -23,14 +23,16 @@ export function CatalogPage() {
   })
 
   return (
-    <div className="container mx-auto px-4 py-10">
-      <div className="mb-10 flex flex-col gap-5">
+    <div className="container mx-auto max-w-[100vw] px-3 py-6 sm:px-4 sm:py-8 md:py-10">
+      <div className="mb-8 flex flex-col gap-4 sm:mb-10 sm:gap-5">
         <div>
-          <h1 className="font-display text-3xl font-bold tracking-tight md:text-4xl">Acervo</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Explore todas as peças disponíveis para locação.</p>
+          <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl md:text-4xl">Acervo</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground sm:mt-2">
+            Explore todas as peças disponíveis para locação.
+          </p>
         </div>
 
-        <div className="relative max-w-md">
+        <div className="relative w-full max-w-md min-w-0">
           <Search className="absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
           <Input
             placeholder="Buscar itens..."
@@ -50,7 +52,7 @@ export function CatalogPage() {
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <Skeleton key={i} className="aspect-[4/3] rounded-2xl" />
           ))}
@@ -62,7 +64,7 @@ export function CatalogPage() {
           <p className="mt-1 text-sm text-muted-foreground">Tente ajustar a busca ou filtro de categoria.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-5 md:grid-cols-3 lg:grid-cols-4 animate-stagger">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 animate-stagger">
           {items.map((item) => (
             <ItemCard key={item.id} item={item} eventDate={eventDate} />
           ))}

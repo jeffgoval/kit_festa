@@ -40,10 +40,10 @@ export function CompositionsPage() {
   })
 
   return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-bold">Composições</h1>
-        <Button asChild>
+    <div className="min-w-0">
+      <div className="mb-5 flex flex-col gap-3 sm:mb-6 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-lg font-bold sm:text-xl">Composições</h1>
+        <Button asChild className="w-full shrink-0 sm:w-auto">
           <Link to="/app/composicoes/nova">
             <Plus className="size-4" />
             Nova composição
@@ -56,34 +56,48 @@ export function CompositionsPage() {
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-14 rounded-lg" />)}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-border bg-background">
-          <table className="w-full text-sm">
+        <div className="w-full min-w-0 overflow-x-auto rounded-lg border border-border bg-background [-webkit-overflow-scrolling:touch]">
+          <table className="w-full min-w-[30rem] text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/40">
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Nome</th>
-                <th className="hidden px-4 py-3 text-left font-medium text-muted-foreground md:table-cell">Tema</th>
-                <th className="hidden px-4 py-3 text-right font-medium text-muted-foreground lg:table-cell">Preço</th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Visível</th>
-                <th className="w-16 px-4 py-3" />
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                  Nome
+                </th>
+                <th className="hidden px-3 py-2.5 text-left text-xs font-medium text-muted-foreground md:table-cell sm:px-4 sm:py-3 sm:text-sm">
+                  Tema
+                </th>
+                <th className="hidden px-3 py-2.5 text-right text-xs font-medium text-muted-foreground lg:table-cell sm:px-4 sm:py-3 sm:text-sm">
+                  Preço
+                </th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                  Visível
+                </th>
+                <th className="w-14 px-2 py-2.5 sm:w-16 sm:px-4 sm:py-3" />
               </tr>
             </thead>
             <tbody>
               {compositions.map((comp) => (
                 <tr key={comp.id} className="border-b border-border last:border-0 hover:bg-muted/30">
-                  <td className="px-4 py-3 font-medium">{comp.name}</td>
-                  <td className="hidden px-4 py-3 text-muted-foreground md:table-cell">{comp.theme ?? '—'}</td>
-                  <td className="hidden px-4 py-3 text-right lg:table-cell">
+                  <td className="px-3 py-2.5 font-medium leading-snug sm:px-4 sm:py-3">{comp.name}</td>
+                  <td className="hidden px-3 py-2.5 text-muted-foreground md:table-cell sm:px-4 sm:py-3">
+                    {comp.theme ?? '—'}
+                  </td>
+                  <td className="hidden px-3 py-2.5 text-right lg:table-cell sm:px-4 sm:py-3">
                     {formatPrice(comp.suggested_price)}
                   </td>
-                  <td className="px-4 py-3">
-                    <button onClick={() => togglePublic(comp)}>
+                  <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                    <button
+                      type="button"
+                      className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md hover:bg-muted"
+                      onClick={() => togglePublic(comp)}
+                    >
                       {comp.is_public
                         ? <Eye className="size-4 text-green-600" />
                         : <EyeOff className="size-4 text-muted-foreground" />}
                     </button>
                   </td>
-                  <td className="px-4 py-3">
-                    <Button variant="ghost" size="icon" asChild className="size-8">
+                  <td className="px-2 py-2 sm:px-4 sm:py-3">
+                    <Button variant="ghost" size="icon" asChild className="size-9 sm:size-8">
                       <Link to={`/app/composicoes/${comp.id}`}>
                         <Pencil className="size-3.5" />
                       </Link>

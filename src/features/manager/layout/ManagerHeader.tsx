@@ -43,14 +43,21 @@ export function ManagerHeader({ onOpenMobileNav }: ManagerHeaderProps) {
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 sm:gap-2">
         {store?.slug && (
-          <Button variant="outline" size="sm" className="hidden sm:inline-flex" asChild>
-            <Link to={`/${store.slug}`} target="_blank" rel="noopener noreferrer">
-              <ExternalLink className="mr-1.5 size-3.5" />
-              Ver loja
-            </Link>
-          </Button>
+          <>
+            <Button variant="ghost" size="icon" className="shrink-0 sm:hidden" asChild title="Ver loja pública">
+              <Link to={`/${store.slug}`} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="size-4" />
+              </Link>
+            </Button>
+            <Button variant="outline" size="sm" className="hidden shrink-0 sm:inline-flex" asChild>
+              <Link to={`/${store.slug}`} target="_blank" rel="noopener noreferrer">
+                <ExternalLink className="mr-1.5 size-3.5" />
+                Ver loja
+              </Link>
+            </Button>
+          </>
         )}
         <span className="hidden max-w-[140px] truncate text-xs text-muted-foreground md:inline">
           {user?.email}

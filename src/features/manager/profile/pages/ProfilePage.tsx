@@ -123,7 +123,7 @@ function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-8">
+    <div className="mx-auto w-full max-w-2xl min-w-0 py-4 sm:py-8">
       <div className="mb-8">
         <h1 className="font-display text-3xl font-bold tracking-tight">Meu Perfil</h1>
         <p className="mt-2 text-muted-foreground">Gerencie suas informações pessoais e segurança da conta.</p>

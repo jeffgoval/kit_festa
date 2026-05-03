@@ -49,15 +49,16 @@ export function RentalsPage() {
   })
 
   return (
-    <div>
-      <h1 className="mb-6 text-xl font-bold">Reservas</h1>
+    <div className="min-w-0">
+      <h1 className="mb-4 text-lg font-bold sm:mb-6 sm:text-xl">Reservas</h1>
 
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="-mx-1 mb-4 flex gap-2 overflow-x-auto pb-1 [-webkit-overflow-scrolling:touch] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:pb-0">
         {FILTERS.map((f) => (
           <button
             key={f.value}
+            type="button"
             onClick={() => setStatusFilter(f.value)}
-            className={`rounded-full border px-3 py-1 text-sm transition-colors ${
+            className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-colors sm:py-1.5 sm:text-sm ${
               statusFilter === f.value
                 ? 'border-primary bg-primary text-primary-foreground'
                 : 'border-border text-muted-foreground hover:border-primary'
@@ -75,34 +76,46 @@ export function RentalsPage() {
       ) : rentals.length === 0 ? (
         <p className="py-12 text-center text-muted-foreground">Nenhuma reserva encontrada.</p>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-border bg-background">
-          <table className="w-full text-sm">
+        <div className="w-full min-w-0 overflow-x-auto rounded-lg border border-border bg-background [-webkit-overflow-scrolling:touch]">
+          <table className="w-full min-w-[30rem] text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/40">
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Cliente</th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Data evento</th>
-                <th className="hidden px-4 py-3 text-right font-medium text-muted-foreground md:table-cell">Total</th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Status</th>
-                <th className="w-16 px-4 py-3" />
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                  Cliente
+                </th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                  Data evento
+                </th>
+                <th className="hidden px-3 py-2.5 text-right text-xs font-medium text-muted-foreground md:table-cell sm:px-4 sm:py-3 sm:text-sm">
+                  Total
+                </th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                  Status
+                </th>
+                <th className="w-14 px-2 py-2.5 sm:w-16 sm:px-4 sm:py-3" />
               </tr>
             </thead>
             <tbody>
               {rentals.map((rental) => (
                 <tr key={rental.id} className="border-b border-border last:border-0 hover:bg-muted/30">
-                  <td className="px-4 py-3 font-medium">{rental.customers.name}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{formatDate(rental.event_date)}</td>
-                  <td className="hidden px-4 py-3 text-right md:table-cell">
+                  <td className="max-w-[10rem] px-3 py-2.5 font-medium leading-snug sm:max-w-none sm:px-4 sm:py-3">
+                    {rental.customers.name}
+                  </td>
+                  <td className="whitespace-nowrap px-3 py-2.5 text-muted-foreground sm:px-4 sm:py-3">
+                    {formatDate(rental.event_date)}
+                  </td>
+                  <td className="hidden whitespace-nowrap px-3 py-2.5 text-right md:table-cell sm:px-4 sm:py-3">
                     {formatPrice(rental.total_price)}
                   </td>
-                  <td className="px-4 py-3">
-                    <Badge variant={STATUS_VARIANT[rental.status]}>
+                  <td className="px-3 py-2.5 sm:px-4 sm:py-3">
+                    <Badge variant={STATUS_VARIANT[rental.status]} className="text-[10px] sm:text-xs">
                       {RENTAL_STATUS_LABEL[rental.status]}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3">
+                  <td className="px-2 py-2.5 sm:px-4 sm:py-3">
                     <Link
                       to={`/app/reservas/${rental.id}`}
-                      className="text-xs text-primary hover:underline"
+                      className="inline-flex min-h-9 items-center text-xs font-medium text-primary hover:underline"
                     >
                       Ver
                     </Link>

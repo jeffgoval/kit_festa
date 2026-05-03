@@ -80,16 +80,17 @@ export function CategoriesPage() {
   }
 
   return (
-    <div className="max-w-lg">
-      <h1 className="mb-6 text-xl font-bold">Categorias</h1>
+    <div className="w-full max-w-lg min-w-0">
+      <h1 className="mb-4 text-lg font-bold sm:mb-6 sm:text-xl">Categorias</h1>
 
-      <form onSubmit={handleCreate} className="mb-6 flex gap-2">
+      <form onSubmit={handleCreate} className="mb-6 flex flex-col gap-2 sm:flex-row">
         <Input
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
           placeholder="Nome da nova categoria"
+          className="min-w-0 flex-1"
         />
-        <Button type="submit">
+        <Button type="submit" className="w-full shrink-0 sm:w-auto">
           <Plus className="size-4" />
           Criar
         </Button>

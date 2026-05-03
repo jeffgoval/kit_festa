@@ -43,33 +43,41 @@ export function ManagersPage() {
   })
 
   return (
-    <div>
-      <h1 className="mb-6 text-xl font-bold">Gestores</h1>
+    <div className="min-w-0">
+      <h1 className="mb-4 text-lg font-bold sm:mb-6 sm:text-xl">Gestores</h1>
 
       {isLoading ? (
         <div className="flex flex-col gap-3">
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-14 rounded-lg" />)}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-lg border border-border bg-background">
-          <table className="w-full text-sm">
+        <div className="w-full min-w-0 overflow-x-auto rounded-lg border border-border bg-background [-webkit-overflow-scrolling:touch]">
+          <table className="w-full min-w-[26rem] text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/40">
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Nome</th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">Loja vinculada</th>
-                <th className="w-48 px-4 py-3" />
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                  Nome
+                </th>
+                <th className="px-3 py-2.5 text-left text-xs font-medium text-muted-foreground sm:px-4 sm:py-3 sm:text-sm">
+                  Loja vinculada
+                </th>
+                <th className="min-w-[11rem] px-2 py-2.5 sm:w-48 sm:px-4 sm:py-3" />
               </tr>
             </thead>
             <tbody>
               {managers.map((m) => (
                 <tr key={m.id} className="border-b border-border last:border-0">
-                  <td className="px-4 py-3 font-medium">{m.full_name ?? m.id.slice(0, 8)}</td>
-                  <td className="px-4 py-3 text-muted-foreground">{m.tenants?.name ?? '—'}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-3 py-2.5 font-medium leading-snug sm:px-4 sm:py-3">
+                    {m.full_name ?? m.id.slice(0, 8)}
+                  </td>
+                  <td className="max-w-[8rem] truncate px-3 py-2.5 text-muted-foreground sm:max-w-none sm:px-4 sm:py-3">
+                    {m.tenants?.name ?? '—'}
+                  </td>
+                  <td className="px-2 py-2 sm:px-4 sm:py-3">
                     <select
                       value={m.tenant_id ?? ''}
                       onChange={(e) => assignTenant({ profileId: m.id, tenantId: e.target.value })}
-                      className="h-8 rounded border border-border bg-background px-2 text-xs focus:outline-none focus:ring-1 focus:ring-ring"
+                      className="h-9 w-full min-w-[10rem] max-w-[14rem] rounded-md border border-border bg-background px-2 text-xs focus:outline-none focus:ring-2 focus:ring-ring sm:max-w-none"
                     >
                       <option value="">Sem loja</option>
                       {tenants.map((t) => (
