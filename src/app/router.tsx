@@ -152,6 +152,7 @@ export const router = createBrowserRouter([
   // ────────────────────────────────────────
   {
     path: 'admin',
+    errorElement: <RouteErrorFallback />,
     element: (
       <RequireAuth redirectTo="/app/login">
         <RequireRole allow={['admin']}>

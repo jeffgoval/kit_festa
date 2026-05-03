@@ -14,6 +14,11 @@ import { cn } from '@/lib/utils'
 import { useManagerTenant } from '@/core/hooks/use-manager-tenant'
 import { Button } from '@/ui/button'
 
+interface SidebarProps {
+  mobileOpen?: boolean
+  onNavigate?: () => void
+}
+
 const NAV_ITEMS = [
   { to: '/app/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/app/reservas', icon: CalendarCheck, label: 'Reservas' },
@@ -25,11 +30,17 @@ const NAV_ITEMS = [
   { to: '/app/perfil', icon: User, label: 'Meu Perfil' },
 ]
 
-export function Sidebar() {
+export function Sidebar({ mobileOpen = false, onNavigate }: SidebarProps) {
   const { data: store } = useManagerTenant()
 
   return (
-    <aside className="flex w-56 shrink-0 flex-col border-r border-border bg-muted/30">
+    <aside
+      className={cn(
+        'flex w-56 shrink-0 flex-col border-r border-border bg-muted/30 transition-transform duration-200 ease-out',
+        'fixed inset-y-0 left-0 z-50 md:static md:z-auto',
+        mobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0',
+      )}
+    >
       <div className="flex h-14 items-center border-b border-border px-4">
         <span className="text-sm font-bold tracking-tight text-primary">Recriar</span>
       </div>
@@ -39,6 +50,7 @@ export function Sidebar() {
           <NavLink
             key={to}
             to={to}
+            onClick={() => onNavigate?.()}
             className={({ isActive }) =>
               cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
@@ -57,7 +69,12 @@ export function Sidebar() {
       {store?.slug && (
         <div className="border-t border-border p-3">
           <Button variant="secondary" size="sm" className="w-full justify-center gap-2" asChild>
-            <Link to={`/${store.slug}`} target="_blank" rel="noopener noreferrer">
+            <Link
+              to={`/${store.slug}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => onNavigate?.()}
+            >
               <ExternalLink className="size-3.5" />
               Loja pública
             </Link>
