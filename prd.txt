@@ -1,0 +1,1535 @@
+# PRD — Recriar
+
+## 1. Visão geral
+
+**Produto:** Recriar
+**Conceito central:** **Pegue e Monte**
+**Tipo:** Webapp para aluguel de itens de festa
+**Modelo inicial:** MVP piloto
+**Modelo futuro:** SaaS multi-tenant
+**Stack:** React + Vite + Supabase Cloud
+
+O Recriar é uma plataforma onde clientes podem montar sua própria festa escolhendo itens avulsos de um acervo, consultar disponibilidade por data e solicitar reserva online.
+
+A loja pode também oferecer **composições prontas** como inspiração, mas o cliente sempre terá liberdade para editar, remover ou adicionar itens.
+
+---
+
+# 2. Problema
+
+Empresas de aluguel de itens para festa normalmente operam com atendimento manual via WhatsApp, Instagram e planilhas.
+
+Isso gera problemas como:
+
+* dificuldade para mostrar todo o acervo disponível;
+* conflito de disponibilidade entre itens;
+* demora para responder clientes;
+* pouca flexibilidade para o cliente montar sua própria festa;
+* dificuldade de gerenciar reservas;
+* ausência de histórico organizado de clientes;
+* dificuldade de escalar o negócio para várias lojas no futuro.
+
+---
+
+# 3. Objetivo do MVP
+
+Criar um webapp funcional onde:
+
+* o cliente consiga visualizar itens avulsos;
+* o cliente consiga montar sua própria festa;
+* o cliente consiga usar composições prontas como ponto de partida;
+* o sistema valide disponibilidade por item;
+* o cliente envie uma solicitação de reserva;
+* o gestor/admin consiga gerenciar itens, reservas, clientes e identidade visual da loja.
+
+---
+
+# 4. Princípio do produto
+
+## Pegue e Monte
+
+O fluxo principal do Recriar é:
+
+```txt
+Cliente acessa a loja
+↓
+Escolhe itens avulsos
+↓
+Monta sua própria festa
+↓
+Seleciona a data do evento
+↓
+Sistema verifica disponibilidade
+↓
+Cliente envia solicitação
+↓
+Gestor confirma, ajusta ou cancela
+```
+
+As composições prontas não são pacotes fechados. Elas funcionam como sugestões editáveis.
+
+```txt
+Composição pronta
+↓
+Cliente usa como base
+↓
+Cliente edita livremente
+↓
+Reserva final é salva item por item
+```
+
+---
+
+# 5. Personas e roles
+
+## 5.1 Admin
+
+Usuário interno da plataforma Recriar.
+
+Responsabilidades:
+
+* gerenciar tenants/lojas;
+* criar ou desativar lojas;
+* acessar configurações globais;
+* dar suporte aos gestores;
+* visualizar dados administrativos do SaaS;
+* gerenciar planos futuramente.
+
+O `admin` é dono da operação SaaS.
+
+---
+
+## 5.2 Gestor
+
+Usuário responsável por uma loja específica.
+
+Responsabilidades:
+
+* editar dados da loja;
+* editar logo da loja;
+* editar nome da loja;
+* editar paleta de cores da loja;
+* cadastrar categorias;
+* cadastrar itens;
+* cadastrar fotos;
+* criar composições prontas;
+* gerenciar clientes;
+* gerenciar solicitações de aluguel;
+* confirmar, cancelar ou finalizar reservas.
+
+O `gestor` só acessa dados do seu próprio tenant.
+
+---
+
+## 5.3 Cliente
+
+Usuário final que acessa a loja pública.
+
+Responsabilidades:
+
+* navegar pelo acervo;
+* visualizar itens;
+* visualizar composições prontas;
+* montar sua própria festa;
+* consultar disponibilidade;
+* enviar solicitação de reserva;
+* compartilhar itens ou composições.
+
+No MVP, o cliente não precisa obrigatoriamente ter login. Ele pode enviar uma solicitação preenchendo seus dados.
+
+---
+
+# 6. Escopo do MVP
+
+## 6.1 Incluído no MVP
+
+### Loja pública
+
+* Página inicial da loja
+* Catálogo de itens avulsos
+* Catálogo de composições prontas
+* Filtros por categoria
+* Detalhe do item
+* Detalhe da composição
+* Carrinho “Minha Festa”
+* Seleção de data do evento
+* Validação de disponibilidade
+* Formulário de solicitação de reserva
+* Compartilhamento em redes sociais
+
+### Painel do gestor
+
+* Login
+* Dashboard simples
+* Gestão de dados da loja
+* Gestão de identidade visual
+* Gestão de categorias
+* Gestão de itens
+* Upload de fotos dos itens
+* Gestão de composições prontas
+* Gestão de clientes
+* Gestão de reservas
+* Confirmação/cancelamento/finalização de aluguel
+
+### Painel admin
+
+* Gestão básica de tenants/lojas
+* Criação de loja
+* Ativar/desativar loja
+* Vincular gestor a uma loja
+
+---
+
+## 6.2 Fora do MVP
+
+* Pagamento online
+* Contrato digital
+* Assinatura eletrônica
+* WhatsApp automático
+* Billing SaaS
+* Planos pagos
+* Domínio personalizado
+* Relatórios avançados
+* Controle financeiro completo
+* Chat interno
+* App mobile nativo
+* Login obrigatório para cliente
+
+---
+
+# 7. Funcionalidades detalhadas
+
+## 7.1 Loja pública
+
+### Objetivo
+
+Permitir que o cliente monte sua própria festa usando itens avulsos ou composições prontas.
+
+### Páginas públicas
+
+```txt
+/
+ /itens
+ /itens/:slug
+ /composicoes
+ /composicoes/:slug
+ /minha-festa
+ /solicitacao-enviada
+```
+
+---
+
+## 7.2 Catálogo de itens avulsos
+
+### Descrição
+
+O cliente deve conseguir navegar pelo acervo da loja e adicionar itens à sua festa.
+
+### Requisitos
+
+Cada item deve exibir:
+
+* foto principal;
+* nome;
+* categoria;
+* descrição curta;
+* preço de aluguel, se visível;
+* botão “Adicionar à minha festa”;
+* botão de compartilhamento.
+
+### Filtros iniciais
+
+* categoria;
+* disponibilidade por data;
+* busca por nome;
+* status público/ativo.
+
+### Regras
+
+* Apenas itens `is_active = true` e `is_public = true` aparecem na loja pública.
+* Itens em manutenção ou indisponíveis não devem poder ser reservados.
+* O cliente pode adicionar mais de uma unidade, respeitando a quantidade disponível.
+
+---
+
+## 7.3 Página de detalhe do item
+
+### Descrição
+
+Página com mais informações sobre um item específico.
+
+### Deve conter
+
+* galeria de fotos;
+* nome;
+* categoria;
+* descrição;
+* preço;
+* quantidade desejada;
+* seletor de data;
+* disponibilidade na data selecionada;
+* botão “Adicionar à minha festa”;
+* botão de compartilhamento.
+
+---
+
+## 7.4 Composições prontas
+
+### Descrição
+
+Composições são sugestões criadas pelo gestor para inspirar o cliente.
+
+Elas não são kits fechados. São pontos de partida.
+
+### Exemplo
+
+```txt
+Composição: Jardim Encantado
+
+Itens sugeridos:
+- 1 painel verde
+- 2 cilindros brancos
+- 4 bandejas douradas
+- 1 tapete verde
+- 3 arranjos artificiais
+```
+
+O cliente pode usar essa composição como base e editar livremente.
+
+### Requisitos
+
+Cada composição deve exibir:
+
+* nome;
+* fotos;
+* tema;
+* descrição;
+* itens sugeridos;
+* preço sugerido, se aplicável;
+* botão “Usar como base”;
+* botão de compartilhamento.
+
+### Regra principal
+
+Ao clicar em **Usar como base**, os itens da composição são adicionados à “Minha Festa”, mas o cliente pode:
+
+* remover itens;
+* alterar quantidades;
+* adicionar itens avulsos;
+* misturar itens de outras composições.
+
+---
+
+## 7.5 Minha Festa
+
+### Descrição
+
+“Minha Festa” é o carrinho de reserva do cliente.
+
+É o centro do conceito **Pegue e Monte**.
+
+### Deve conter
+
+* lista de itens escolhidos;
+* foto resumida de cada item;
+* quantidade de cada item;
+* preço unitário;
+* subtotal;
+* data do evento;
+* disponibilidade dos itens;
+* dados do cliente;
+* observações;
+* botão “Solicitar reserva”.
+
+### Regras
+
+* O cliente pode alterar quantidades.
+* O cliente pode remover itens.
+* O cliente pode continuar adicionando itens.
+* O cliente deve escolher uma data antes de enviar.
+* O sistema deve validar disponibilidade item por item.
+* Se algum item estiver indisponível, o cliente deve ser informado.
+
+---
+
+## 7.6 Solicitação de reserva
+
+### Campos do formulário
+
+* nome;
+* telefone/WhatsApp;
+* e-mail;
+* data do evento;
+* endereço ou bairro;
+* observações;
+* itens escolhidos;
+* aceite das regras da loja.
+
+### Status inicial
+
+Toda solicitação criada pela loja pública deve entrar como:
+
+```txt
+pending
+```
+
+### Confirmação
+
+Após o envio, o cliente vê uma tela de sucesso:
+
+```txt
+Solicitação enviada com sucesso.
+A loja irá analisar a disponibilidade e entrar em contato para confirmar.
+```
+
+---
+
+# 8. Painel do gestor
+
+## 8.1 Dashboard
+
+### Objetivo
+
+Dar uma visão rápida da operação da loja.
+
+### Indicadores iniciais
+
+* reservas pendentes;
+* reservas confirmadas;
+* próximas reservas;
+* total de itens cadastrados;
+* itens indisponíveis ou em manutenção.
+
+---
+
+## 8.2 Configurações da loja
+
+### Objetivo
+
+Permitir que o gestor personalize sua loja.
+
+Essa área deve ter uma aba específica no painel.
+
+### Nome sugerido da aba
+
+```txt
+Minha Loja
+```
+
+ou
+
+```txt
+Personalização da Loja
+```
+
+### O gestor deve conseguir editar
+
+* nome da loja;
+* logo;
+* telefone;
+* WhatsApp;
+* Instagram;
+* Facebook;
+* e-mail;
+* paleta de cores;
+* texto de apresentação da loja.
+
+---
+
+## 8.3 Paleta de cores da loja
+
+### Objetivo
+
+Cada tenant deve poder ter sua própria identidade visual.
+
+### Campos sugeridos
+
+```txt
+Cor primária
+Cor secundária
+Cor de destaque
+Cor de fundo
+Cor do texto
+```
+
+### Exemplo técnico
+
+```json
+{
+  "primary_color": "#8B5CF6",
+  "secondary_color": "#F9A8D4",
+  "accent_color": "#F59E0B",
+  "background_color": "#FFFFFF",
+  "text_color": "#111827"
+}
+```
+
+### Regras
+
+* A paleta pertence ao tenant.
+* Apenas `admin` e `gestor` podem alterar.
+* O cliente apenas visualiza a loja já personalizada.
+* A loja pública deve carregar as cores do tenant.
+* Caso uma loja não tenha paleta definida, usar paleta padrão do Recriar.
+
+---
+
+## 8.4 Logo da loja
+
+### Requisitos
+
+* Upload de imagem;
+* armazenamento no Supabase Storage;
+* preview antes de salvar;
+* opção de remover/substituir logo;
+* limite de tamanho recomendado;
+* aceitar PNG, JPG ou WebP.
+
+### Regra
+
+A logo pertence ao tenant e deve aparecer na loja pública e no painel do gestor.
+
+---
+
+## 8.5 Gestão de categorias
+
+O gestor deve conseguir:
+
+* criar categoria;
+* editar categoria;
+* desativar categoria;
+* ordenar categorias.
+
+Exemplos:
+
+```txt
+Painéis
+Cilindros
+Bandejas
+Suportes
+Tapetes
+Decoração
+Mobiliário
+Iluminação
+Outros
+```
+
+---
+
+## 8.6 Gestão de itens
+
+### Objetivo
+
+Cadastrar o acervo individual da loja.
+
+### Campos do item
+
+* nome;
+* slug;
+* categoria;
+* descrição;
+* quantidade total;
+* preço de aluguel;
+* custo de reposição;
+* condição;
+* visível na loja pública;
+* ativo/inativo;
+* observações internas.
+
+### Condições possíveis
+
+```txt
+new
+good
+worn
+maintenance
+unavailable
+```
+
+### Ações
+
+* criar item;
+* editar item;
+* excluir ou desativar item;
+* adicionar fotos;
+* alterar quantidade;
+* alterar preço;
+* marcar como manutenção;
+* ocultar da loja pública.
+
+---
+
+## 8.7 Gestão de fotos dos itens
+
+### Requisitos
+
+* um item pode ter múltiplas fotos;
+* uma foto pode ser principal;
+* o gestor pode ordenar fotos;
+* o gestor pode remover fotos;
+* imagens devem ser armazenadas no Supabase Storage.
+
+---
+
+## 8.8 Gestão de composições
+
+### Objetivo
+
+Permitir que o gestor crie sugestões prontas para o cliente usar como base.
+
+### Campos
+
+* nome;
+* slug;
+* tema;
+* descrição;
+* preço sugerido;
+* visível na loja pública;
+* ativo/inativo;
+* itens da composição;
+* quantidades sugeridas.
+
+### Ações
+
+* criar composição;
+* editar composição;
+* adicionar item à composição;
+* remover item da composição;
+* alterar quantidade sugerida;
+* publicar/despublicar composição.
+
+---
+
+## 8.9 Gestão de clientes
+
+### Objetivo
+
+Organizar os dados dos clientes que enviam solicitações.
+
+### Campos
+
+* nome;
+* telefone;
+* e-mail;
+* documento, opcional;
+* endereço;
+* observações internas;
+* histórico de reservas.
+
+### Regras
+
+* Se um cliente enviar nova solicitação com o mesmo telefone, o sistema deve reaproveitar o cadastro existente.
+* Clientes pertencem a um tenant.
+* Um gestor só vê clientes da própria loja.
+
+---
+
+## 8.10 Gestão de reservas
+
+### Objetivo
+
+Permitir que o gestor acompanhe e controle os aluguéis.
+
+### Status
+
+```txt
+pending
+confirmed
+cancelled
+completed
+```
+
+### Ações do gestor
+
+* visualizar reserva;
+* editar itens da reserva;
+* alterar quantidades;
+* confirmar reserva;
+* cancelar reserva;
+* finalizar reserva;
+* adicionar observação interna;
+* ajustar valor;
+* verificar disponibilidade antes de confirmar.
+
+### Regras
+
+* Apenas reservas `confirmed` bloqueiam estoque no MVP.
+* Reservas `pending` não bloqueiam estoque.
+* Ao confirmar uma reserva, o sistema deve validar novamente a disponibilidade.
+* Se algum item não estiver disponível, a confirmação deve ser bloqueada ou exigir ajuste.
+
+---
+
+# 9. Disponibilidade
+
+## Regra principal
+
+A disponibilidade sempre é calculada por item.
+
+```txt
+Nunca validar disponibilidade por composição.
+Sempre validar disponibilidade por item.
+```
+
+## Fórmula
+
+```txt
+quantidade disponível =
+quantidade total do item
+-
+quantidade já confirmada para a mesma data
+```
+
+## Exemplo
+
+```txt
+Item: Bandeja dourada
+Quantidade total: 10
+
+Reservas confirmadas para 20/06/2026:
+- Reserva A: 4 unidades
+- Reserva B: 2 unidades
+
+Disponível:
+10 - 6 = 4 unidades
+```
+
+Se o cliente tentar reservar 5 unidades, o sistema deve informar que só existem 4 disponíveis.
+
+---
+
+# 10. Modelo multi-tenant
+
+Desde o MVP, o sistema deve considerar múltiplas lojas.
+
+## Conceito
+
+```txt
+Tenant = loja/empresa que usa o Recriar
+```
+
+Cada loja terá:
+
+* seus próprios gestores;
+* seus próprios clientes;
+* seus próprios itens;
+* suas próprias composições;
+* suas próprias reservas;
+* sua própria identidade visual.
+
+## Regra de isolamento
+
+Um gestor de uma loja nunca pode acessar dados de outra loja.
+
+Todas as tabelas principais devem ter:
+
+```txt
+tenant_id
+```
+
+---
+
+# 11. Modelo de dados sugerido
+
+## 11.1 `tenants`
+
+Representa cada loja.
+
+```sql
+create table public.tenants (
+  id uuid primary key default gen_random_uuid(),
+  name text not null,
+  slug text not null unique,
+  logo_url text,
+  phone text,
+  email text,
+  instagram_url text,
+  facebook_url text,
+  whatsapp_number text,
+  description text,
+  primary_color text,
+  secondary_color text,
+  accent_color text,
+  background_color text,
+  text_color text,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+```
+
+---
+
+## 11.2 `profiles`
+
+Relaciona usuários autenticados ao tenant.
+
+```sql
+create table public.profiles (
+  id uuid primary key references auth.users(id) on delete cascade,
+  tenant_id uuid references public.tenants(id) on delete cascade,
+  full_name text,
+  role text not null default 'cliente',
+  created_at timestamptz not null default now(),
+
+  constraint profiles_role_check check (
+    role in ('admin', 'gestor', 'cliente')
+  )
+);
+```
+
+### Observação
+
+Para clientes sem login, o cadastro fica em `customers`.
+Para clientes com login futuro, pode haver vínculo entre `profiles` e `customers`.
+
+---
+
+## 11.3 `categories`
+
+```sql
+create table public.categories (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  name text not null,
+  sort_order integer not null default 0,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now()
+);
+```
+
+---
+
+## 11.4 `items`
+
+```sql
+create table public.items (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  category_id uuid references public.categories(id) on delete set null,
+  name text not null,
+  slug text not null,
+  description text,
+  total_quantity integer not null default 1,
+  rental_price numeric(10,2),
+  replacement_cost numeric(10,2),
+  condition text not null default 'good',
+  is_active boolean not null default true,
+  is_public boolean not null default true,
+  internal_notes text,
+  created_at timestamptz not null default now(),
+
+  constraint items_quantity_check check (total_quantity >= 0),
+  constraint items_price_check check (rental_price is null or rental_price >= 0),
+  constraint items_condition_check check (
+    condition in ('new', 'good', 'worn', 'maintenance', 'unavailable')
+  ),
+  constraint items_unique_slug_per_tenant unique (tenant_id, slug)
+);
+```
+
+---
+
+## 11.5 `item_images`
+
+```sql
+create table public.item_images (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  item_id uuid not null references public.items(id) on delete cascade,
+  image_url text not null,
+  alt_text text,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+```
+
+---
+
+## 11.6 `compositions`
+
+```sql
+create table public.compositions (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  name text not null,
+  slug text not null,
+  description text,
+  theme text,
+  suggested_price numeric(10,2),
+  is_active boolean not null default true,
+  is_public boolean not null default true,
+  created_at timestamptz not null default now(),
+
+  constraint compositions_price_check check (
+    suggested_price is null or suggested_price >= 0
+  ),
+  constraint compositions_unique_slug_per_tenant unique (tenant_id, slug)
+);
+```
+
+---
+
+## 11.7 `composition_items`
+
+```sql
+create table public.composition_items (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  composition_id uuid not null references public.compositions(id) on delete cascade,
+  item_id uuid not null references public.items(id) on delete restrict,
+  quantity integer not null default 1,
+  sort_order integer not null default 0,
+
+  constraint composition_items_quantity_check check (quantity > 0),
+  constraint composition_items_unique unique (composition_id, item_id)
+);
+```
+
+---
+
+## 11.8 `customers`
+
+```sql
+create table public.customers (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  name text not null,
+  email text,
+  phone text not null,
+  document text,
+  address text,
+  notes text,
+  created_at timestamptz not null default now(),
+
+  constraint customers_unique_phone_per_tenant unique (tenant_id, phone)
+);
+```
+
+---
+
+## 11.9 `rentals`
+
+```sql
+create table public.rentals (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  customer_id uuid not null references public.customers(id) on delete restrict,
+  event_date date not null,
+  return_date date,
+  status text not null default 'pending',
+  source text not null default 'web',
+  subtotal numeric(10,2) not null default 0,
+  discount numeric(10,2) not null default 0,
+  total_price numeric(10,2) not null default 0,
+  address text,
+  public_notes text,
+  internal_notes text,
+  created_at timestamptz not null default now(),
+
+  constraint rentals_status_check check (
+    status in ('pending', 'confirmed', 'cancelled', 'completed')
+  ),
+  constraint rentals_source_check check (
+    source in ('web', 'admin', 'instagram', 'whatsapp', 'manual')
+  ),
+  constraint rentals_discount_check check (discount >= 0),
+  constraint rentals_total_check check (total_price >= 0)
+);
+```
+
+---
+
+## 11.10 `rental_items`
+
+Guarda a reserva final item por item.
+
+```sql
+create table public.rental_items (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  rental_id uuid not null references public.rentals(id) on delete cascade,
+  item_id uuid not null references public.items(id) on delete restrict,
+  composition_id uuid references public.compositions(id) on delete set null,
+  quantity integer not null default 1,
+  unit_price numeric(10,2),
+  item_name_snapshot text not null,
+  created_at timestamptz not null default now(),
+
+  constraint rental_items_quantity_check check (quantity > 0),
+  constraint rental_items_unit_price_check check (
+    unit_price is null or unit_price >= 0
+  )
+);
+```
+
+### Regra
+
+Se `composition_id` for `null`, o item foi adicionado avulso.
+Se `composition_id` estiver preenchido, o item veio originalmente de uma composição pronta.
+
+Mesmo assim, a reserva final é sempre validada por item.
+
+---
+
+## 11.11 `rental_compositions`
+
+Histórico opcional das composições usadas como base.
+
+```sql
+create table public.rental_compositions (
+  id uuid primary key default gen_random_uuid(),
+  tenant_id uuid not null references public.tenants(id) on delete cascade,
+  rental_id uuid not null references public.rentals(id) on delete cascade,
+  composition_id uuid references public.compositions(id) on delete set null,
+  composition_name_snapshot text not null,
+  suggested_price_snapshot numeric(10,2),
+  created_at timestamptz not null default now()
+);
+```
+
+---
+
+# 12. Permissões
+
+## 12.1 Admin
+
+Pode:
+
+* acessar todos os tenants;
+* criar tenants;
+* editar tenants;
+* ativar/desativar tenants;
+* vincular gestores;
+* visualizar dados globais.
+
+Não é foco do MVP:
+
+* billing;
+* planos;
+* métricas SaaS avançadas.
+
+---
+
+## 12.2 Gestor
+
+Pode, apenas no próprio tenant:
+
+* editar dados da loja;
+* editar paleta de cores;
+* editar logo;
+* criar categorias;
+* criar itens;
+* editar itens;
+* criar composições;
+* editar composições;
+* visualizar clientes;
+* visualizar reservas;
+* editar reservas;
+* confirmar reservas;
+* cancelar reservas;
+* finalizar reservas.
+
+Não pode:
+
+* acessar outros tenants;
+* criar outro tenant;
+* alterar dados globais do SaaS;
+* acessar painel admin geral.
+
+---
+
+## 12.3 Cliente
+
+Pode:
+
+* acessar loja pública;
+* visualizar itens públicos;
+* visualizar composições públicas;
+* montar a própria festa;
+* enviar solicitação de reserva.
+
+No MVP, cliente não acessa painel autenticado.
+
+---
+
+# 13. RLS no Supabase
+
+## Função auxiliar
+
+```sql
+create or replace function public.current_tenant_id()
+returns uuid
+language sql
+stable
+as $$
+  select tenant_id
+  from public.profiles
+  where id = auth.uid()
+$$;
+```
+
+## Função para role
+
+```sql
+create or replace function public.current_user_role()
+returns text
+language sql
+stable
+as $$
+  select role
+  from public.profiles
+  where id = auth.uid()
+$$;
+```
+
+## Exemplo de policy para gestor
+
+```sql
+alter table public.items enable row level security;
+
+create policy "Gestor can manage items from own tenant"
+on public.items
+for all
+using (
+  tenant_id = public.current_tenant_id()
+  and public.current_user_role() in ('admin', 'gestor')
+)
+with check (
+  tenant_id = public.current_tenant_id()
+  and public.current_user_role() in ('admin', 'gestor')
+);
+```
+
+## Exemplo de leitura pública
+
+Para catálogo público, recomenda-se criar views seguras ou policies específicas.
+
+```sql
+create policy "Public can view active public items"
+on public.items
+for select
+using (
+  is_active = true
+  and is_public = true
+);
+```
+
+Para SaaS, o ideal é a aplicação pública sempre filtrar por `tenant.slug`.
+
+---
+
+# 14. Fluxos principais
+
+## 14.1 Cliente monta festa com itens avulsos
+
+```txt
+Cliente entra na loja
+↓
+Abre catálogo de itens
+↓
+Filtra por categoria
+↓
+Adiciona itens à Minha Festa
+↓
+Escolhe quantidades
+↓
+Seleciona data
+↓
+Sistema valida disponibilidade
+↓
+Cliente preenche dados
+↓
+Envia solicitação
+↓
+Reserva criada como pending
+```
+
+---
+
+## 14.2 Cliente usa composição pronta como base
+
+```txt
+Cliente abre Composições Prontas
+↓
+Escolhe uma composição
+↓
+Clica em Usar como base
+↓
+Itens são adicionados à Minha Festa
+↓
+Cliente edita itens e quantidades
+↓
+Cliente adiciona outros itens avulsos
+↓
+Seleciona data
+↓
+Sistema valida disponibilidade
+↓
+Cliente envia solicitação
+```
+
+---
+
+## 14.3 Gestor confirma reserva
+
+```txt
+Gestor acessa painel
+↓
+Abre reservas pendentes
+↓
+Visualiza dados do cliente e itens solicitados
+↓
+Sistema valida disponibilidade novamente
+↓
+Gestor confirma
+↓
+Reserva muda para confirmed
+↓
+Itens passam a bloquear estoque naquela data
+```
+
+---
+
+## 14.4 Gestor personaliza loja
+
+```txt
+Gestor acessa painel
+↓
+Abre Minha Loja
+↓
+Edita nome da loja
+↓
+Envia logo
+↓
+Define paleta de cores
+↓
+Salva alterações
+↓
+Loja pública passa a exibir a nova identidade visual
+```
+
+---
+
+# 15. Regras de negócio
+
+## RB-001 — Estoque por item
+
+O estoque real sempre pertence ao item individual.
+
+---
+
+## RB-002 — Composição não bloqueia estoque
+
+Uma composição pronta não bloqueia disponibilidade.
+Somente reservas confirmadas bloqueiam estoque.
+
+---
+
+## RB-003 — Reserva salva itens finais
+
+A reserva final deve ser salva em `rental_items`, item por item.
+
+---
+
+## RB-004 — Cliente pode personalizar
+
+O cliente pode alterar livremente os itens antes de solicitar reserva.
+
+---
+
+## RB-005 — Apenas confirmed bloqueia
+
+No MVP, somente reservas com status `confirmed` bloqueiam estoque.
+
+---
+
+## RB-006 — Pending não bloqueia
+
+Solicitações pendentes não bloqueiam estoque.
+
+---
+
+## RB-007 — Confirmação exige revalidação
+
+Antes de mudar uma reserva para `confirmed`, o sistema deve validar disponibilidade novamente.
+
+---
+
+## RB-008 — Tenant isolado
+
+Todo dado operacional pertence a um tenant.
+
+---
+
+## RB-009 — Gestor só vê seu tenant
+
+Um gestor só pode visualizar e editar dados da própria loja.
+
+---
+
+## RB-010 — Cliente não vê dados internos
+
+Cliente não pode visualizar:
+
+* observações internas;
+* custo de reposição;
+* dados de outros clientes;
+* reservas de outros clientes;
+* painel administrativo.
+
+---
+
+## RB-011 — Paleta por loja
+
+Cada loja pode ter sua própria paleta de cores.
+
+---
+
+## RB-012 — Logo por loja
+
+Cada loja pode ter sua própria logo.
+
+---
+
+# 16. Critérios de aceite
+
+## Cliente
+
+* Cliente consegue ver itens públicos.
+* Cliente consegue filtrar itens por categoria.
+* Cliente consegue adicionar item à Minha Festa.
+* Cliente consegue alterar quantidade.
+* Cliente consegue remover item.
+* Cliente consegue usar composição como base.
+* Cliente consegue editar composição antes de solicitar.
+* Cliente consegue escolher data.
+* Cliente recebe aviso se item estiver indisponível.
+* Cliente consegue enviar solicitação de reserva.
+
+---
+
+## Gestor
+
+* Gestor consegue fazer login.
+* Gestor só acessa dados da sua loja.
+* Gestor consegue cadastrar item.
+* Gestor consegue adicionar fotos ao item.
+* Gestor consegue criar composição.
+* Gestor consegue editar composição.
+* Gestor consegue visualizar reservas.
+* Gestor consegue confirmar reserva.
+* Gestor consegue cancelar reserva.
+* Gestor consegue finalizar reserva.
+* Gestor consegue editar nome da loja.
+* Gestor consegue alterar logo.
+* Gestor consegue alterar paleta de cores.
+
+---
+
+## Admin
+
+* Admin consegue criar tenant.
+* Admin consegue ativar/desativar tenant.
+* Admin consegue vincular gestor a tenant.
+* Admin consegue acessar visão geral dos tenants.
+
+---
+
+# 17. Métricas de sucesso do piloto
+
+O MVP será considerado bem-sucedido se:
+
+* clientes conseguirem montar uma festa sem atendimento manual inicial;
+* solicitações chegarem com itens e data organizados;
+* gestor conseguir confirmar reservas sem planilha;
+* sistema evitar conflito de disponibilidade;
+* catálogo reduzir perguntas repetitivas no WhatsApp;
+* cliente usar itens avulsos como fluxo principal;
+* composições prontas ajudarem na conversão;
+* personalização visual permitir que a loja pareça própria do gestor.
+
+---
+
+# 18. Navegação sugerida
+
+## Loja pública
+
+```txt
+Home
+Itens
+Composições
+Minha Festa
+Solicitar Reserva
+```
+
+## Painel gestor
+
+```txt
+Dashboard
+Reservas
+Clientes
+Itens
+Categorias
+Composições
+Minha Loja
+```
+
+## Painel admin
+
+```txt
+Tenants
+Gestores
+Configurações
+```
+
+---
+
+# 19. Rotas sugeridas React
+
+## Públicas
+
+```txt
+/:tenantSlug
+/:tenantSlug/itens
+/:tenantSlug/itens/:itemSlug
+/:tenantSlug/composicoes
+/:tenantSlug/composicoes/:compositionSlug
+/:tenantSlug/minha-festa
+/:tenantSlug/solicitacao-enviada
+```
+
+## Gestor
+
+```txt
+/app/login
+/app/dashboard
+/app/reservas
+/app/reservas/:id
+/app/clientes
+/app/itens
+/app/itens/novo
+/app/itens/:id
+/app/categorias
+/app/composicoes
+/app/composicoes/nova
+/app/composicoes/:id
+/app/minha-loja
+```
+
+## Admin
+
+```txt
+/admin
+/admin/tenants
+/admin/tenants/novo
+/admin/tenants/:id
+/admin/gestores
+```
+
+---
+
+# 20. Componentes principais
+
+## Públicos
+
+```txt
+StoreLayout
+ItemCard
+ItemGallery
+CategoryFilter
+CompositionCard
+MyPartyCart
+DateSelector
+AvailabilityBadge
+ReservationForm
+ShareButton
+```
+
+## Painel gestor
+
+```txt
+AdminLayout
+DashboardCards
+ItemForm
+ItemImageUploader
+CategoryForm
+CompositionForm
+CompositionItemSelector
+RentalTable
+RentalDetail
+CustomerTable
+StoreSettingsForm
+ColorPaletteEditor
+LogoUploader
+```
+
+## Admin SaaS
+
+```txt
+TenantTable
+TenantForm
+ManagerAssignmentForm
+```
+
+---
+
+# 21. Prioridade de implementação
+
+## Fase 1 — Base
+
+* Setup React + Vite
+* Setup Supabase
+* Auth
+* Schema multi-tenant
+* RLS inicial
+* Criação manual do primeiro tenant
+* Login gestor
+
+## Fase 2 — Acervo
+
+* CRUD categorias
+* CRUD itens
+* Upload de fotos
+* Catálogo público de itens
+
+## Fase 3 — Pegue e Monte
+
+* Minha Festa
+* Adicionar item ao carrinho
+* Alterar quantidade
+* Selecionar data
+* Validar disponibilidade
+* Enviar solicitação
+
+## Fase 4 — Reservas
+
+* Painel de reservas
+* Detalhe da reserva
+* Confirmar/cancelar/finalizar
+* Bloqueio de estoque por reservas confirmadas
+
+## Fase 5 — Composições
+
+* CRUD composições
+* Adicionar itens à composição
+* Página pública de composições
+* Usar composição como base
+
+## Fase 6 — Personalização da loja
+
+* Nome da loja
+* Logo
+* Paleta de cores
+* Aplicar identidade visual na loja pública
+
+## Fase 7 — Admin SaaS básico
+
+* Criar tenants
+* Ativar/desativar tenants
+* Vincular gestores
+
+---
+
+# 22. Definição final do produto
+
+**Recriar é uma plataforma SaaS para lojas de aluguel de itens de festa, baseada no conceito “Pegue e Monte”, onde clientes escolhem itens avulsos, montam sua própria composição, consultam disponibilidade por data e enviam solicitações de reserva online. Gestores administram acervo, clientes, reservas e identidade visual da própria loja em um painel multi-tenant.**
