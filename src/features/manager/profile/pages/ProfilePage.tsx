@@ -38,6 +38,7 @@ function ProfilePage() {
       email: '',
     },
   })
+  const resetProfileForm = profileForm.reset
 
   const passwordForm = useForm<PasswordFormData>({
     resolver: zodResolver(passwordSchema),
@@ -49,26 +50,31 @@ function ProfilePage() {
 
   useEffect(() => {
     if (user && profile) {
-      profileForm.reset({
+      resetProfileForm({
         fullName: profile.full_name ?? '',
         email: user.email ?? '',
       })
     }
-  }, [user, profile, profileForm])
+  }, [user, profile, resetProfileForm])
 
   async function onUpdateProfile(data: ProfileFormData) {
     if (!user) return
     setLoading(true)
     try {
-      // 1. Update Profile in DB
-      const { data: updatedData, error: profileError, count } = await supabase
+      // 1. Update Profile in DB (single row — count após .select() não é confiável no cliente)
+      const { data: row, error: profileError } = await supabase
         .from('profiles')
         .update({ full_name: data.fullName })
         .eq('id', user.id)
-        .select()
+        .select('full_name')
+        .single()
 
-      if (profileError) throw profileError
-      if (count === 0) throw new Error('Permissão negada ou usuário não encontrado no banco.')
+      if (profileError) {
+        if (profileError.code === 'PGRST116') {
+          throw new Error('Não foi possível atualizar o perfil. Verifique permissões ou tente de novo.')
+        }
+        throw profileError
+      }
 
       // 2. Update Email in Auth (requires confirmation)
       if (data.email !== user.email) {
@@ -82,10 +88,9 @@ function ProfilePage() {
         toast({ title: 'Perfil atualizado com sucesso' })
       }
       
-      // Manual refresh of the form with returned data if available
-      if (updatedData && updatedData[0]) {
+      if (row) {
         profileForm.reset({
-          fullName: updatedData[0].full_name ?? '',
+          fullName: row.full_name ?? '',
           email: data.email,
         })
       }
