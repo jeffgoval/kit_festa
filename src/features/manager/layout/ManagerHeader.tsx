@@ -1,4 +1,4 @@
-import { ExternalLink, LogOut } from 'lucide-react'
+import { ExternalLink, LogOut, PanelLeft } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '@/lib/supabase/client'
 import { useAuthContext } from '@/core/contexts/auth.context'
@@ -6,7 +6,11 @@ import { useManagerTenant } from '@/core/hooks/use-manager-tenant'
 import { Button } from '@/ui/button'
 import { Skeleton } from '@/ui/skeleton'
 
-export function ManagerHeader() {
+type ManagerHeaderProps = {
+  onOpenMobileNav?: () => void
+}
+
+export function ManagerHeader({ onOpenMobileNav }: ManagerHeaderProps) {
   const { user } = useAuthContext()
   const navigate = useNavigate()
   const { data: store, isLoading } = useManagerTenant()
@@ -17,7 +21,19 @@ export function ManagerHeader() {
   }
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border bg-background px-4 md:px-6">
+    <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border bg-background px-3 sm:gap-3 sm:px-4 md:px-6">
+      {onOpenMobileNav && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="shrink-0 md:hidden"
+          aria-label="Abrir menu"
+          onClick={onOpenMobileNav}
+        >
+          <PanelLeft className="size-5" />
+        </Button>
+      )}
       <div className="min-w-0 flex-1">
         <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Painel</p>
         {isLoading ? (

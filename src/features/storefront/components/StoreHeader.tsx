@@ -25,21 +25,21 @@ export function StoreHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-border/40 bg-background/80 shadow-sm backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-[72px] items-center justify-between gap-4 px-4">
+      <div className="container mx-auto flex min-h-[60px] items-center justify-between gap-2 px-3 py-2 sm:min-h-[72px] sm:gap-3 sm:px-4">
         {/* Logo */}
         <Link
           to={base}
-          className="flex min-w-0 items-center gap-2.5 transition-opacity hover:opacity-80"
+          className="flex min-w-0 flex-1 items-center gap-2 transition-opacity hover:opacity-80 sm:max-w-[min(55%,28rem)] sm:flex-none"
           onClick={() => setMobileOpen(false)}
         >
           {tenant?.logo_url ? (
             <img
               src={tenant.logo_url}
               alt={tenant.name}
-              className="h-10 w-auto max-w-[180px] object-contain"
+              className="h-9 w-auto max-w-[min(42vw,9rem)] object-contain sm:h-10 sm:max-w-[180px]"
             />
           ) : (
-            <span className="truncate text-xl font-bold tracking-tight text-primary">
+            <span className="truncate text-lg font-bold tracking-tight text-primary sm:text-xl">
               {tenant?.name}
             </span>
           )}
@@ -79,11 +79,10 @@ export function StoreHeader() {
         </nav>
 
         {/* Right actions */}
-        <div className="flex items-center gap-1.5">
-          <Button variant="outline" size="sm" className="shrink-0 gap-1.5 px-3 md:hidden" asChild>
-            <Link to="/app/login">
-              <LogIn className="size-4" />
-              Entrar
+        <div className="flex shrink-0 items-center gap-0.5 sm:gap-1.5">
+          <Button variant="ghost" size="icon" className="shrink-0 md:hidden" asChild>
+            <Link to="/app/login" aria-label="Entrar no painel da loja">
+              <LogIn className="size-5" />
             </Link>
           </Button>
           <Button variant="ghost" size="icon" asChild className="relative shrink-0">
@@ -104,7 +103,7 @@ export function StoreHeader() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="shrink-0 md:hidden"
             aria-label={mobileOpen ? 'Fechar menu' : 'Abrir menu'}
             onClick={() => setMobileOpen((o) => !o)}
           >
@@ -115,8 +114,8 @@ export function StoreHeader() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="animate-fade-in border-t border-border/60 bg-background md:hidden">
-          <nav className="container flex flex-col gap-1 px-4 py-4">
+        <div className="animate-fade-in border-t border-border/60 bg-background pb-[max(0.5rem,env(safe-area-inset-bottom))] md:hidden">
+          <nav className="container flex max-h-[min(70vh,28rem)] flex-col gap-1 overflow-y-auto overscroll-contain px-3 py-3 sm:px-4 sm:py-4">
             <Link
               to="/app/login"
               className="flex items-center gap-2 rounded-xl px-4 py-3.5 text-base font-medium text-primary transition-colors hover:bg-muted"

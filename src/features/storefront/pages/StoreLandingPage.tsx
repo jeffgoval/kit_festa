@@ -96,7 +96,7 @@ export function StoreLandingPage() {
       {/* ═══════════════════════════════════════ */}
       {/* Hero — gradiente vibrante + pattern     */}
       {/* ═══════════════════════════════════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/[0.08] via-secondary/[0.06] to-background pb-0 pt-12 md:pt-20">
+      <section className="relative overflow-x-hidden bg-gradient-to-br from-primary/[0.08] via-secondary/[0.06] to-background pb-0 pt-8 sm:pt-12 md:pt-20">
         {/* Decorative dot pattern */}
         <div
           className="pointer-events-none absolute inset-0 opacity-25"
@@ -109,30 +109,37 @@ export function StoreLandingPage() {
         <div className="pointer-events-none absolute -right-32 top-0 h-80 w-80 rounded-full bg-secondary/20 blur-[100px]" />
         <div className="pointer-events-none absolute -left-20 bottom-0 h-60 w-60 rounded-full bg-primary/15 blur-[80px]" />
 
-        <div className="container relative mx-auto px-4 pb-20 md:pb-24">
+        <div className="container relative mx-auto max-w-[100vw] px-3 pb-16 sm:px-4 sm:pb-20 md:pb-24">
           <div className="mx-auto max-w-3xl text-center animate-fade-in">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-background/80 px-5 py-2 text-xs font-medium text-primary shadow-card backdrop-blur">
+            <div className="mb-4 inline-flex max-w-full items-center gap-2 rounded-full border border-primary/20 bg-background/80 px-3 py-1.5 text-[11px] font-medium text-primary shadow-card backdrop-blur sm:mb-6 sm:px-5 sm:py-2 sm:text-xs">
               <Sparkles className="size-3.5 shrink-0 animate-bounce-soft" />
-              Locação para festas · Monte do seu jeito
+              <span className="min-w-0 text-left leading-snug sm:text-center">
+                Locação para festas · Monte do seu jeito
+              </span>
             </div>
-            <h1 className="font-display text-balance text-4xl font-bold tracking-tight text-foreground md:text-5xl lg:text-6xl">
+            <h1 className="font-display text-balance text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
               {tenant?.name ?? 'Sua loja'}
             </h1>
-            <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
+            <p className="mx-auto mt-4 max-w-2xl text-pretty text-sm leading-relaxed text-muted-foreground sm:mt-5 sm:text-base md:text-lg">
               {headline}
             </p>
-            <div className="mt-10 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
-              <Button size="lg" className="h-13 px-8 text-base shadow-lg" asChild>
+            <div className="mt-8 flex flex-col items-stretch justify-center gap-3 sm:mt-10 sm:flex-row sm:items-center">
+              <Button size="lg" className="h-12 px-6 text-base shadow-lg sm:h-13 sm:px-8" asChild>
                 <Link to={`/${tenantSlug}/itens`}>
                   Ver catálogo
                   <ArrowRight className="ml-2 size-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-13 border-primary/25 bg-background/80 backdrop-blur" asChild>
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-12 border-primary/25 bg-background/80 backdrop-blur sm:h-13"
+                asChild
+              >
                 <Link to={`/${tenantSlug}/composicoes`}>Composições prontas</Link>
               </Button>
               {waHref && (
-                <Button size="lg" variant="whatsapp" className="h-13" asChild>
+                <Button size="lg" variant="whatsapp" className="h-12 sm:h-13" asChild>
                   <a href={waHref} target="_blank" rel="noopener noreferrer">
                     <MessageCircle className="mr-1 size-4" />
                     Falar no WhatsApp
@@ -338,13 +345,13 @@ export function StoreLandingPage() {
       {/* ═══════════════════════════════════════ */}
       <section className="relative overflow-hidden bg-muted/30 py-16 md:py-20">
         <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-primary/[0.08] via-secondary/[0.05] to-background p-10 text-center shadow-card md:p-14">
+          <div className="mx-auto max-w-3xl rounded-2xl bg-gradient-to-br from-primary/[0.08] via-secondary/[0.05] to-background p-6 text-center shadow-card sm:rounded-3xl sm:p-10 md:p-14">
             <div className="mx-auto flex justify-center gap-1 text-accent">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star key={i} className="size-5 fill-current drop-shadow-sm" />
               ))}
             </div>
-            <blockquote className="mt-6 font-display text-xl font-medium leading-relaxed text-foreground md:text-2xl">
+            <blockquote className="mt-6 font-display text-lg font-medium leading-relaxed text-foreground sm:text-xl md:text-2xl">
               &ldquo;A decoração fica na memória afetiva da família — por isso priorizamos clareza no catálogo e no
               pedido.&rdquo;
             </blockquote>

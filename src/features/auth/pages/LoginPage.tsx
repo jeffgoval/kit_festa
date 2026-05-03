@@ -123,8 +123,8 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
-      <div className="w-full max-w-md animate-fade-in rounded-2xl border border-border/80 bg-background p-8 shadow-card md:p-10">
+    <div className="flex min-h-[100dvh] items-start justify-center bg-muted/40 px-3 py-8 pb-[max(2rem,env(safe-area-inset-bottom))] pt-[max(1.5rem,env(safe-area-inset-top))] sm:items-center sm:px-4 sm:py-10">
+      <div className="w-full max-w-md animate-fade-in rounded-2xl border border-border/80 bg-background p-5 shadow-card sm:p-8 md:p-10">
         <div className="mb-6 text-center">
           <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">Painel Kit Festa</h1>
           <p className="mt-2 text-sm text-muted-foreground">
