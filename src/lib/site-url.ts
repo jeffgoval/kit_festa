@@ -9,7 +9,7 @@ export function getPublicSiteOrigin(): string {
   return ''
 }
 
-/** URL exata usada em redirectTo do Supabase Auth UI (precisa estar em Redirect URLs no dashboard). */
+/** URL de retorno e-mail (convite / recuperação) — precisa estar em Redirect URLs no Supabase. */
 export function getAuthEmailRedirectUrl(): string {
   return `${getPublicSiteOrigin()}/app/login`
 }
