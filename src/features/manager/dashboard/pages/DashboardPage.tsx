@@ -104,10 +104,6 @@ export function DashboardPage() {
     <div className="mx-auto max-w-6xl">
       <div className="mb-8 rounded-2xl border border-border bg-gradient-to-br from-primary/[0.06] via-background to-secondary/[0.06] p-6 shadow-sm md:p-8">
         <h1 className="text-2xl font-bold tracking-tight md:text-3xl">Olá, {firstName}</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-          Resumo da operação — no estilo de painéis de locadoras: priorize reservas pendentes e mantenha o catálogo
-          atualizado para a vitrine pública.
-        </p>
         <div className="mt-6 flex flex-wrap gap-2">
           {QUICK_ACTIONS.map(({ to, label, desc, icon: Icon }) => (
             <Button key={to} variant="secondary" className="h-auto px-0 py-0" asChild>
