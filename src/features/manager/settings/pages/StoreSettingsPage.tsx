@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react'
-import { useForm } from 'react-hook-form'
+import { useEffect, useMemo, useRef } from 'react'
+import { useForm, type FieldErrors } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { useAuthContext } from '@/core/contexts/auth.context'
@@ -10,28 +9,24 @@ import { Button } from '@/ui/button'
 import { Input } from '@/ui/input'
 import { ColorPaletteEditor } from '../components/ColorPaletteEditor'
 import { toast } from '@/ui/use-toast'
-
-const schema = z.object({
-  name: z.string().min(1, 'Nome é obrigatório'),
-  phone: z.string().optional(),
-  email: z.string().email('E-mail inválido').optional().or(z.literal('')),
-  whatsapp_number: z.string().optional(),
-  instagram_url: z.string().url().optional().or(z.literal('')),
-  facebook_url: z.string().url().optional().or(z.literal('')),
-  description: z.string().optional(),
-  primary_color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-  secondary_color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-  accent_color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-  background_color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-  text_color: z.string().regex(/^#[0-9a-fA-F]{6}$/).optional(),
-})
-
-type FormData = z.infer<typeof schema>
+import {
+  emptyTenantSettingsForm,
+  formatSupabaseUserMessage,
+  safeHex6,
+  tenantFormToUpdateRow,
+  tenantSettingsSchema,
+  type TenantSettingsForm,
+} from '../lib/tenant-settings-schema'
 
 export function StoreSettingsPage() {
   const { profile } = useAuthContext()
   const tenantId = profile?.tenant_id ?? ''
   const logoInputRef = useRef<HTMLInputElement>(null)
+  const lastTenantHydrateKey = useRef('')
+
+  useEffect(() => {
+    lastTenantHydrateKey.current = ''
+  }, [tenantId])
 
   const { data: tenant } = useQuery({
     queryKey: queryKeys.tenant(tenantId),
@@ -47,67 +42,146 @@ export function StoreSettingsPage() {
     enabled: !!tenantId,
   })
 
-  const form = useForm<FormData>({ resolver: zodResolver(schema) })
+  const form = useForm<TenantSettingsForm>({
+    resolver: zodResolver(tenantSettingsSchema),
+    defaultValues: emptyTenantSettingsForm(),
+  })
+
+  const tenantHydrateKey = useMemo(
+    () =>
+      tenant
+        ? [
+            tenant.id,
+            tenant.name,
+            tenant.phone ?? '',
+            tenant.email ?? '',
+            tenant.whatsapp_number ?? '',
+            tenant.instagram_url ?? '',
+            tenant.facebook_url ?? '',
+            tenant.description ?? '',
+            tenant.primary_color ?? '',
+            tenant.secondary_color ?? '',
+            tenant.accent_color ?? '',
+            tenant.background_color ?? '',
+            tenant.text_color ?? '',
+          ].join('|')
+        : '',
+    [tenant],
+  )
 
   useEffect(() => {
-    if (tenant) {
-      form.reset({
-        name: tenant.name,
-        phone: tenant.phone ?? '',
-        email: tenant.email ?? '',
-        whatsapp_number: tenant.whatsapp_number ?? '',
-        instagram_url: tenant.instagram_url ?? '',
-        facebook_url: tenant.facebook_url ?? '',
-        description: tenant.description ?? '',
-        primary_color: tenant.primary_color ?? '#8B5CF6',
-        secondary_color: tenant.secondary_color ?? '#F9A8D4',
-        accent_color: tenant.accent_color ?? '#F59E0B',
-        background_color: tenant.background_color ?? '#FFFFFF',
-        text_color: tenant.text_color ?? '#111827',
-      })
-    }
-  }, [tenant, form])
+    if (!tenantHydrateKey || !tenant) return
+    if (tenantHydrateKey === lastTenantHydrateKey.current) return
+    lastTenantHydrateKey.current = tenantHydrateKey
+    form.reset({
+      name: tenant.name,
+      phone: tenant.phone ?? '',
+      email: tenant.email ?? '',
+      whatsapp_number: tenant.whatsapp_number ?? '',
+      instagram_url: tenant.instagram_url ?? '',
+      facebook_url: tenant.facebook_url ?? '',
+      description: tenant.description ?? '',
+      primary_color: safeHex6(tenant.primary_color, '#8B5CF6'),
+      secondary_color: safeHex6(tenant.secondary_color, '#F9A8D4'),
+      accent_color: safeHex6(tenant.accent_color, '#F59E0B'),
+      background_color: safeHex6(tenant.background_color, '#FFFFFF'),
+      text_color: safeHex6(tenant.text_color, '#111827'),
+    })
+  }, [tenantHydrateKey, tenant, form])
 
-  const { mutateAsync: saveSettings, isPending } = useMutation({
-    mutationFn: async (data: FormData) => {
-      const { error } = await supabase
+  const { mutate: saveSettings, isPending } = useMutation({
+    mutationFn: async (data: TenantSettingsForm) => {
+      if (!tenantId) {
+        throw new Error('Nenhuma loja vinculada ao seu usuário.')
+      }
+      const payload = tenantFormToUpdateRow(data)
+      const { data: row, error } = await supabase
         .from('tenants')
-        .update(data)
+        .update(payload)
         .eq('id', tenantId)
+        .select('id')
+        .maybeSingle()
+
       if (error) throw error
+      if (!row) {
+        throw new Error(
+          'A atualização não foi aplicada (0 linhas). Confira se sua conta está vinculada à loja e se você tem permissão de gestor.',
+        )
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tenant(tenantId) })
       toast({ title: 'Configurações salvas' })
     },
+    onError: (err) => {
+      toast({
+        title: 'Erro ao salvar',
+        description: formatSupabaseUserMessage(err),
+        variant: 'destructive',
+      })
+    },
   })
 
-  const { mutateAsync: uploadLogo, isPending: uploadingLogo } = useMutation({
+  const { mutate: uploadLogo, isPending: uploadingLogo } = useMutation({
     mutationFn: async (file: File) => {
-      const ext = file.name.split('.').pop()
-      const path = `${tenantId}/logo.${ext}`
+      if (!tenantId) {
+        throw new Error(
+          'Nenhuma loja vinculada ao seu usuário. Peça ao administrador para associar sua conta a uma loja.',
+        )
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        throw new Error('Imagem acima de 2MB. Escolha um arquivo menor.')
+      }
+
+      const fromName = file.name.split('.').pop()?.toLowerCase()
+      const ext =
+        fromName && ['png', 'jpg', 'jpeg', 'webp'].includes(fromName)
+          ? fromName === 'jpeg'
+            ? 'jpg'
+            : fromName
+          : file.type === 'image/png'
+            ? 'png'
+            : file.type === 'image/webp'
+              ? 'webp'
+              : 'jpg'
+
+      const path = `${tenantId}/logo-${Date.now()}-${crypto.randomUUID().slice(0, 8)}.${ext}`
 
       const { error: uploadError } = await supabase.storage
         .from('tenant-assets')
-        .upload(path, file, { upsert: true })
+        .upload(path, file, { upsert: false, contentType: file.type || undefined })
 
       if (uploadError) throw uploadError
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('tenant-assets')
-        .getPublicUrl(path)
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('tenant-assets').getPublicUrl(path)
 
-      const { error } = await supabase
+      const { data: row, error } = await supabase
         .from('tenants')
         .update({ logo_url: publicUrl })
         .eq('id', tenantId)
+        .select('id')
+        .maybeSingle()
 
       if (error) throw error
+      if (!row) {
+        throw new Error(
+          'Não foi possível gravar a URL da logo. Verifique permissões ou vínculo da conta com a loja.',
+        )
+      }
       return publicUrl
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.tenant(tenantId) })
       toast({ title: 'Logo atualizada' })
+    },
+    onError: (err) => {
+      toast({
+        title: 'Não foi possível salvar a logo',
+        description: formatSupabaseUserMessage(err),
+        variant: 'destructive',
+      })
     },
   })
 
@@ -116,7 +190,19 @@ export function StoreSettingsPage() {
       <h1 className="mb-6 text-xl font-bold">Minha Loja</h1>
 
       <form
-        onSubmit={form.handleSubmit((d) => saveSettings(d))}
+        onSubmit={form.handleSubmit(
+          (d) => {
+            saveSettings(d)
+          },
+          (errors: FieldErrors<TenantSettingsForm>) => {
+            const first = Object.values(errors)[0] as { message?: string } | undefined
+            toast({
+              title: 'Revise o formulário',
+              description: first?.message ?? 'Alguns campos estão inválidos.',
+              variant: 'destructive',
+            })
+          },
+        )}
         className="flex flex-col gap-8"
       >
         {/* Logo */}
@@ -140,7 +226,7 @@ export function StoreSettingsPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => logoInputRef.current?.click()}
-                disabled={uploadingLogo}
+                disabled={uploadingLogo || !tenantId}
               >
                 {uploadingLogo ? 'Enviando...' : 'Alterar logo'}
               </Button>
@@ -183,6 +269,10 @@ export function StoreSettingsPage() {
             <div>
               <label className="mb-1.5 block text-sm">Instagram</label>
               <Input {...form.register('instagram_url')} placeholder="https://instagram.com/..." />
+            </div>
+            <div>
+              <label className="mb-1.5 block text-sm">Facebook</label>
+              <Input {...form.register('facebook_url')} placeholder="https://facebook.com/..." />
             </div>
             <div className="sm:col-span-2">
               <label className="mb-1.5 block text-sm">Apresentação da loja</label>

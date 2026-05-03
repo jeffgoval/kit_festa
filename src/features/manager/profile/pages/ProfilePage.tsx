@@ -26,7 +26,7 @@ const passwordSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>
 type PasswordFormData = z.infer<typeof passwordSchema>
 
-export function ProfilePage() {
+function ProfilePage() {
   const { user, profile } = useAuthContext()
   const [loading, setLoading] = useState(false)
   const [passLoading, setPassLoading] = useState(false)
@@ -211,3 +211,5 @@ export function ProfilePage() {
     </div>
   )
 }
+
+export default ProfilePage

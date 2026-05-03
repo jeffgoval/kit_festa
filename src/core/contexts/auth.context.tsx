@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from 'react'
 import type { Session, User } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase/client'
 import type { Profile, UserRole } from '@/core/types'
@@ -22,36 +22,52 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loading: true,
   })
 
+  const fetchProfile = useCallback(async (userId: string) => {
+    setState((prev) => ({ ...prev, loading: true }))
+    const { data } = await supabase.from('profiles').select('*').eq('id', userId).single()
+
+    setState((prev) => {
+      if (prev.user?.id !== userId) return prev
+      return {
+        ...prev,
+        profile: data ?? null,
+        role: (data?.role as UserRole | undefined) ?? null,
+        loading: false,
+      }
+    })
+  }, [])
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setState((prev) => ({ ...prev, session, user: session?.user ?? null }))
-      if (session?.user) fetchProfile(session.user.id)
+      if (session?.user) void fetchProfile(session.user.id)
       else setState((prev) => ({ ...prev, loading: false }))
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setState((prev) => ({ ...prev, session, user: session?.user ?? null }))
-      if (session?.user) fetchProfile(session.user.id)
-      else setState((prev) => ({ ...prev, profile: null, role: null, loading: false }))
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session?.user) {
+        setState((prev) => ({
+          ...prev,
+          session: null,
+          user: null,
+          profile: null,
+          role: null,
+          loading: false,
+        }))
+        return
+      }
+
+      setState((prev) => ({ ...prev, session, user: session.user }))
+
+      if (event === 'TOKEN_REFRESHED') return
+
+      void fetchProfile(session.user.id)
     })
 
     return () => subscription.unsubscribe()
-  }, [])
-
-  async function fetchProfile(userId: string) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', userId)
-      .single()
-
-    setState((prev) => ({
-      ...prev,
-      profile: data,
-      role: data?.role ?? null,
-      loading: false,
-    }))
-  }
+  }, [fetchProfile])
 
   return <AuthContext.Provider value={state}>{children}</AuthContext.Provider>
 }

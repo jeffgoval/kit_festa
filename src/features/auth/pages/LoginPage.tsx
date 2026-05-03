@@ -1,22 +1,45 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/core/hooks/use-auth'
+import type { UserRole } from '@/core/types'
+
+function postLoginPath(role: UserRole | null, intended: string): string {
+  if (!role) return '/'
+
+  if (role === 'cliente') return '/'
+
+  if (role === 'gestor') {
+    if (intended.startsWith('/admin')) return '/app/dashboard'
+    if (intended.startsWith('/app')) return intended
+    return '/app/dashboard'
+  }
+
+  if (role === 'admin') {
+    if (intended.startsWith('/admin') || intended.startsWith('/app')) return intended
+    return '/admin/tenants'
+  }
+
+  return '/app/dashboard'
+}
 
 export function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { user, loading } = useAuth()
-  
-  const from = (location.state as { from?: Location })?.from?.pathname ?? '/app/dashboard'
+  const { user, loading, role } = useAuth()
+
+  const intended = useMemo(() => {
+    const p = (location.state as { from?: { pathname?: string } })?.from?.pathname
+    if (!p || p === '/app/login') return '/app/dashboard'
+    return p
+  }, [location.state])
 
   useEffect(() => {
-    if (user && !loading) {
-      navigate(from, { replace: true })
-    }
-  }, [user, loading, navigate, from])
+    if (!user || loading) return
+    navigate(postLoginPath(role, intended), { replace: true })
+  }, [user, loading, role, navigate, intended])
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/40 px-4">
@@ -94,7 +117,7 @@ export function LoginPage() {
             },
           }}
           providers={[]} // Desabilitado por enquanto, mas pronto para adicionar Google, etc.
-          redirectTo={window.location.origin + from}
+          redirectTo={`${window.location.origin}${intended}`}
         />
 
         <div className="mt-8 border-t border-border/50 pt-6 text-center">
